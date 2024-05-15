@@ -1,27 +1,45 @@
 import { axiosInstance } from '@/lib/axios'
 import { useMutation } from '@tanstack/react-query'
+import { CreatePostCommand } from '../types'
+import { useAuth } from '@/features/auth/context/AuthContext'
 
 // Will return the user's uniquely generated username
 export const createPost = async (
-    loginRequest: CreateUserCommand
+    formData: FormData,
+    token: string
 ): Promise<string> => {
-    const response = await axiosInstance.post(
-        `/users`,
-        JSON.stringify(loginRequest)
-    )
+    const response = await axiosInstance.post(`/posts`, formData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+    })
 
     return response.data
 }
+function createFormData(request: CreatePostCommand): FormData {
+    console.log('request: ', request)
+    const formData = new FormData()
+    formData.append('Text', request.text)
+    if (request.parentPostId) {
+        formData.append('ParentPostId', request.parentPostId.toString())
+    }
+    request.medias.forEach((media, index) => {
+        formData.append(`Medias`, media)
+    })
+    return formData
+}
 
 export const useCreatePost = () => {
-    // const { toast } = useToast()
-    // const { user } = useAuth()
-    // console.log('token for use sign up: ', token)
+    const { token } = useAuth()
     return useMutation({
-        mutationFn: (request: CreateUserCommand) => createPost(request),
-        onSuccess: (data) => {},
-        // onError: (error) => {
-        //     console.log('use sign up error: ', error)
-        // },
+        mutationFn: (request: CreatePostCommand) =>
+            createPost(createFormData(request), token),
+        onSuccess: (data) => {
+            console.log('create post data', data)
+        },
+        onError: (error) => {
+            console.log('create error: ', error)
+        },
     })
 }
