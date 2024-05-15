@@ -239,7 +239,7 @@ function PostForm({
 
                     <ButtonWithLoading
                         onClick={form.handleSubmit(onSubmit)}
-                        className="rounded-full"
+                        className="rounded-full w-28"
                         isLoading={isPending}
                         disabled={
                             !form.formState.isValid || !form.formState.isDirty
