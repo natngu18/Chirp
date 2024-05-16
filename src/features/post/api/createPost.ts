@@ -24,7 +24,7 @@ function createFormData(request: CreatePostCommand): FormData {
     if (request.parentPostId) {
         formData.append('ParentPostId', request.parentPostId.toString())
     }
-    request.medias.forEach((media, index) => {
+    request.medias.forEach((media) => {
         formData.append(`Medias`, media)
     })
     return formData

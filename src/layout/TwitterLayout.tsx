@@ -2,9 +2,8 @@ import CollapsibleSidebar from '@/components/CollapsibleSidebar'
 import { NavItem } from '@/components/types'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { CircleUserRoundIcon, LayoutDashboard } from 'lucide-react'
-import { Outlet } from 'react-router-dom'
 
-export default function TwitterLayout() {
+export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
     const { appUser } = useAuth()
     const userNavItems: NavItem[] = [
         {
@@ -35,11 +34,9 @@ export default function TwitterLayout() {
                 )
             */}
             <CollapsibleSidebar navItems={userNavItems} />
-            <div
-                className="hover-animation flex min-h-screen w-full max-w-xl flex-col border-x-0
-         border-light-border pb-96 dark:border-dark-border xs:border-x"
-            >
-                <Outlet />
+            <div className="hover-animation flex min-h-screen w-full max-w-xl flex-col border-x-0 border-light-border pb-96 dark:border-dark-border xs:border-x">
+                {/* <Outlet /> */}
+                {children}
             </div>
 
             <div className="border-l w-96 flex-col gap-4 px-4 py-3 pt-1 hidden lg:flex">

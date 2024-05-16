@@ -1,8 +1,12 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { toast } from '@/components/ui/use-toast'
 import { useAuth } from '../context/AuthContext'
 
-export const AuthenticationGuard = () => {
+export const AuthenticationGuard = ({
+    children,
+}: {
+    children: React.ReactNode
+}) => {
     const { firebaseUser, appUser } = useAuth()
     // const user = storage.getUser()
     // Check if the user is authenticated
@@ -19,5 +23,5 @@ export const AuthenticationGuard = () => {
         return <Navigate to="/login" replace />
     }
 
-    return <Outlet />
+    return children
 }

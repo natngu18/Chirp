@@ -3,7 +3,7 @@ import { useAuth } from '@/features/auth/context/AuthContext'
 import PostForm from '@/features/post/components/PostForm'
 import { doSignOut } from '@/firebase/auth'
 
-function HomePage() {
+export const HomePage = () => {
     const { firebaseUser: user } = useAuth()
     console.log('user: ', user)
     return (
@@ -15,5 +15,3 @@ function HomePage() {
         </div>
     )
 }
-
-export default HomePage
