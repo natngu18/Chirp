@@ -1,14 +1,10 @@
-import { Outlet, Route, Routes } from 'react-router'
+import { Navigate, Outlet } from 'react-router'
 import { AuthProvider } from './features/auth/context/AuthContext'
-import SuspenseRouter from './routes/SuspenseRouter'
 import { Suspense } from 'react'
-// import TwitterLayout from './layout/TwitterLayout'
 import { AuthenticationGuard } from './features/auth/components/AuthenticationGuard'
 import { lazyImport } from './lib/lazyImport'
 import MainLayout from './layout/MainLayout'
-import LoadingPage from './pages/LoadingPage'
 import { Spinner } from './components/Spinner'
-// import { TwitterLayout } from './layout/TwitterLayout'
 
 const { HomePage } = lazyImport(() => import('@/pages/HomePage'), 'HomePage')
 const { LoginPage } = lazyImport(() => import('@/pages/LoginPage'), 'LoginPage')
@@ -28,6 +24,11 @@ const { TwitterLayout } = lazyImport(
     () => import('./layout/TwitterLayout'),
     'TwitterLayout'
 )
+import { loader as userProfileLoader } from './features/user/components/UserProfile'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { SuspenseLayout } from './layout/SuspenseLayout'
+const queryClient = new QueryClient()
 
 const MainApp = () => {
     return (
@@ -44,42 +45,67 @@ const MainApp = () => {
         </TwitterLayout>
     )
 }
-
+const routesForAuthenticatedOnly = [
+    {
+        path: '/',
+        element: (
+            <AuthenticationGuard>
+                <MainApp />
+            </AuthenticationGuard>
+        ),
+        children: [
+            {
+                index: true,
+                element: <HomePage />,
+            },
+            {
+                path: 'test',
+                element: <div className="h-[2000px]">2</div>,
+            },
+            {
+                path: 'profile/:username',
+                element: <UserProfile />,
+                loader: userProfileLoader(queryClient),
+            },
+        ],
+    },
+]
+const routesForPublic = [
+    {
+        path: 'register',
+        element: <SignUpPage />,
+    },
+    {
+        path: 'login',
+        element: <LoginPage />,
+    },
+]
+const router = createBrowserRouter([
+    {
+        element: <SuspenseLayout />,
+        children: [
+            {
+                path: '/',
+                element: <MainLayout />,
+                children: [
+                    ...routesForPublic,
+                    ...routesForAuthenticatedOnly,
+                    {
+                        path: '*',
+                        element: <Navigate to="/" />,
+                    },
+                ],
+            },
+        ],
+    },
+])
 function App() {
     return (
-        <AuthProvider>
-            <SuspenseRouter window={window}>
-                <Suspense fallback={<LoadingPage />}>
-                    <Routes>
-                        <Route element={<MainLayout />}>
-                            <Route path="/register" element={<SignUpPage />} />
-                            <Route path="/login" element={<LoginPage />} />
-                            <Route
-                                path="/"
-                                element={
-                                    <AuthenticationGuard>
-                                        <MainApp />
-                                    </AuthenticationGuard>
-                                }
-                            >
-                                <Route index={true} element={<HomePage />} />
-                                <Route
-                                    path="test"
-                                    element={
-                                        <div className="h-[2000px]">2</div>
-                                    }
-                                />
-                                <Route
-                                    path="profile/:username"
-                                    element={<UserProfile />}
-                                />
-                            </Route>
-                        </Route>
-                    </Routes>
-                </Suspense>
-            </SuspenseRouter>
-            {/* <RouterProvider router={router} /> */}
-        </AuthProvider>
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <RouterProvider router={router} />
+            </AuthProvider>
+        </QueryClientProvider>
     )
 }
 
