@@ -1,6 +1,7 @@
 import CollapsibleSidebar from '@/components/CollapsibleSidebar'
 import { NavItem } from '@/components/types'
 import { useAuth } from '@/features/auth/context/AuthContext'
+import { Searchbar } from '@/features/search/components/Searchbar'
 import { CircleUserRoundIcon, LayoutDashboard } from 'lucide-react'
 
 export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
@@ -40,6 +41,7 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             <div className="border-l w-96 flex-col gap-4 px-4 py-3 pt-1 hidden lg:flex">
+                <Searchbar />
                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint
                 dolorem neque quis fuga in deserunt omnis accusantium? Quod
                 deserunt quaerat deleniti magnam suscipit quas nam. Id,

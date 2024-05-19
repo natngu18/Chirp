@@ -20,9 +20,5 @@ export const useCreateUser = () => {
     // console.log('token for use sign up: ', token)
     return useMutation({
         mutationFn: (request: CreateUserCommand) => createUser(request),
-        onSuccess: (data) => {},
-        // onError: (error) => {
-        //     console.log('use sign up error: ', error)
-        // },
     })
 }

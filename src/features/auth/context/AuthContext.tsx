@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { auth } from '@/firebase/firebase'
 import storage from '@/lib/storage'
-import { useGetUser } from '../api/getUser'
+import { useGetUserById } from '../api/getUser'
 import { UserResponse } from '../types'
 
 type Props = {
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: Props) => {
         storage.getUser()
     )
     // Fetch user data from backend, which contains additoinal information for Firebase user
-    const userQuery = useGetUser(
+    const userQuery = useGetUserById(
         firebaseUser?.uid || '',
         storage.getUser() ? false : true // Disable query if user data is already in localStorage
     )
