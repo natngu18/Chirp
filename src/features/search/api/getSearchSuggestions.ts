@@ -19,5 +19,6 @@ export const useGetSearchSuggestions = (params: GetSearchSuggestionsQuery) => {
         queryFn: () => getSearchSuggestions(params),
         enabled: !!params.searchText,
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
     })
 }
