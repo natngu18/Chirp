@@ -4,6 +4,7 @@ import { GetSearchSuggestionsQuery } from '../types'
 import CircularButton from '@/components/CircularButton'
 import { XIcon } from 'lucide-react'
 import SearchSuggestions from './SearchSuggestions'
+import { useOutsideClick } from '@/hooks/useOutsideClick'
 
 const USER_SUGGESTIONS_COUNT = 5
 
@@ -16,11 +17,14 @@ export const Searchbar = () => {
 
     const inputRef = useRef<HTMLInputElement>(null)
     const [open, setOpen] = useState(false)
-
+    const commandRef = useOutsideClick(() => {
+        setOpen(false)
+    })
     return (
         <div>
             <div className="flex flex-col md:flex-row gap-3 ">
                 <Command
+                    ref={commandRef}
                     //Fixes conditional rendering of loading component for SearchSuggestions
                     shouldFilter={false}
                     className="relative flex justify-center items-between overflow-visible  rounded-full bg-gray-200 "
@@ -37,7 +41,7 @@ export const Searchbar = () => {
                                 searchText: value,
                             })
                         }
-                        onBlur={() => setOpen(false)}
+                        // onBlur={() => setOpen(false)}
                         onFocus={() => {
                             setOpen(true)
                         }}
@@ -65,6 +69,7 @@ export const Searchbar = () => {
                             {open && (
                                 <SearchSuggestions
                                     suggestionParams={suggestionParams}
+                                    onSuggestionSelect={() => setOpen(false)}
                                 />
                             )}
                         </CommandList>

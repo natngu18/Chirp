@@ -7,9 +7,10 @@ import { createSearchParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/Spinner'
 type Props = {
     suggestionParams: GetSearchSuggestionsQuery
+    onSuggestionSelect?: () => void
 }
 
-function SearchSuggestions({ suggestionParams }: Props) {
+function SearchSuggestions({ suggestionParams, onSuggestionSelect }: Props) {
     const navigate = useNavigate()
     const debouncedSearch = useDebounce(suggestionParams, 500)
     // Disabled when search text is empty string
@@ -28,11 +29,12 @@ function SearchSuggestions({ suggestionParams }: Props) {
                     className="text-md hover:cursor-pointer"
                     onSelect={() => {
                         navigate({
-                            pathname: '/search',
+                            pathname: '/explore',
                             search: createSearchParams({
                                 q: suggestionParams.searchText,
                             }).toString(),
                         })
+                        if (onSuggestionSelect) onSuggestionSelect()
                     }}
                 >
                     {`Search for "${suggestionParams.searchText}"`}
@@ -48,6 +50,7 @@ function SearchSuggestions({ suggestionParams }: Props) {
                         value={user.username}
                         onSelect={(selectedUsername) => {
                             navigate(`/profile/${selectedUsername}`)
+                            if (onSuggestionSelect) onSuggestionSelect()
                         }}
                     >
                         <UserSearchSuggestionItem user={user} />
