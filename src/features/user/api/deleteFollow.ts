@@ -1,6 +1,7 @@
 import { auth } from '@/firebase/firebase'
 import { axiosInstance } from '@/lib/axios'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { UserDetailedResponse } from '../types'
 
 export const deleteFollow = async (username: string): Promise<void> => {
     const token = await auth.currentUser?.getIdToken()
@@ -21,12 +22,15 @@ export const useDeleteFollow = (username: string) => {
         mutationFn: () => deleteFollow(username),
         onMutate: async () => {
             await queryClient.cancelQueries({ queryKey: ['user', username] })
-            const previousUser = queryClient.getQueryData(['user', username])
+            const previousUser = queryClient.getQueryData<UserDetailedResponse>(
+                ['user', username]
+            )
             // Optimistically update to the new value
             if (previousUser) {
                 queryClient.setQueryData(['user', username], {
                     ...previousUser,
                     isFollowing: false,
+                    followersCount: previousUser.followersCount - 1,
                 })
             }
 
