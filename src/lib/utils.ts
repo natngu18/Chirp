@@ -17,3 +17,30 @@ export const sizeInMB = (sizeInBytes: number, decimalsNum = 2) => {
     const result = sizeInBytes / (1024 * 1024)
     return +result.toFixed(decimalsNum)
 }
+
+import { format } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
+export const formatInTimeZone = (date: number | Date, fmt: string) =>
+    format(
+        utcToZonedTime(date, Intl.DateTimeFormat().resolvedOptions().timeZone),
+        fmt
+    )
+
+import { differenceInHours, differenceInYears, parseISO } from 'date-fns'
+
+// Meant to be used for a post creation date only
+export function formatPostUtcDate(dateString: string) {
+    const date = parseISO(`${dateString}Z`)
+    const now = new Date()
+
+    const hoursDifference = differenceInHours(now, date)
+    const yearsDifference = differenceInYears(now, date)
+
+    if (hoursDifference < 24) {
+        return `${hoursDifference}h`
+    } else if (yearsDifference < 1) {
+        return format(date, 'MMM d')
+    } else {
+        return format(date, 'MMM d, yyyy')
+    }
+}
