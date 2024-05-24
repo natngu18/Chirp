@@ -10,3 +10,17 @@ export interface Media extends BaseEntity<number> {
 }
 
 export type MediaType = 'image' | 'video'
+
+export type PaginatedList<T> = {
+    items: T[]
+    totalPages: number
+    pageNumber: number
+    totalCount: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+}
+
+export type PaginationParams = {
+    pageNumber?: number
+    pageSize?: number
+}

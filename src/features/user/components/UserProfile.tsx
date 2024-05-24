@@ -1,39 +1,17 @@
-import { QueryClient, useQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { Params, useLoaderData, useNavigate, useParams } from 'react-router'
-// import { getUserByUsernameQuery } from '../api/getUserByUsername'
+import { useNavigate, useParams } from 'react-router'
 import { useInView } from 'react-intersection-observer'
 import CircularButton from '@/components/CircularButton'
 import { ArrowLeftIcon, CalendarIcon } from 'lucide-react'
 import FollowButton from './FollowButton'
-import { Separator } from '@/components/ui/separator'
 import { formatInTimeZone } from '@/lib/utils'
 import { parseISO } from 'date-fns'
-import { useAuth } from '@/features/auth/context/AuthContext'
 import { useGetUserByUsername } from '../api/getUserByUsername'
 import { Spinner } from '@/components/Spinner'
-
-// React Router Loader function.
-// export const loader =
-//     (queryClient: QueryClient) =>
-//     async ({ params }: { params: Params<'username'> }) => {
-
-//         const query = getUserByUsernameQuery(params.username!)
-//         // return data or fetch it
-//         //equivalent to queryClient.getQueryData(query.queryKey)
-//         //?? (await queryClient.fetchQuery(query))
-//         return await queryClient.ensureQueryData(query)
-//     }
+import UserTabs from './UserTabs'
 
 export const UserProfile = () => {
-    // const initialData = useLoaderData() as Awaited<
-    //     ReturnType<ReturnType<typeof loader>>
-    // >
-    // const { token } = useAuth()
     const params = useParams()
-    // const { data: user } = useQuery({
-    //     ...getUserByUsernameQuery(params.username!, token),
-    //     // initialData: initialData,
-    // })
+
     const { data: user } = useGetUserByUsername(params.username!)
     const [headerRef, inView] = useInView({
         triggerOnce: false,
@@ -43,6 +21,7 @@ export const UserProfile = () => {
 
     console.log(user)
     const navigate = useNavigate()
+
     if (!user)
         return (
             // TODO use loading skeletons
@@ -99,7 +78,7 @@ export const UserProfile = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col px-3 gap-3">
+                <div className="flex flex-col px-3 gap-2">
                     <div className="flex flex-col">
                         <span className="text-2xl font-bold">
                             {user.displayName}
@@ -124,9 +103,26 @@ export const UserProfile = () => {
                             )}
                         </span>
                     </div>
+
+                    <div className="flex text-sm gap-3">
+                        <div>
+                            <span className="font-semibold">
+                                {user.followersCount}
+                            </span>{' '}
+                            <span className="text-gray-500">Followers</span>
+                        </div>
+
+                        <div>
+                            <span className="font-semibold">
+                                {user.followingsCount}
+                            </span>{' '}
+                            <span className="text-gray-500">Following</span>
+                        </div>
+                    </div>
                 </div>
 
-                <Separator />
+                <UserTabs username={user.username} />
+                {/* <Separator /> */}
             </div>
         </div>
     )

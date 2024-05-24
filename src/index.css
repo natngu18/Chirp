@@ -74,3 +74,7 @@
         @apply bg-background text-foreground;
     }
 }
+
+.clickable-object {
+    @apply cursor-pointer transition duration-300 ease-in-out hover:filter hover:brightness-90;
+}
