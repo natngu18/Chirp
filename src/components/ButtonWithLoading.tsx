@@ -10,43 +10,40 @@ interface Props
     isLoading: boolean
     children?: React.ReactNode
 }
-function ButtonWithLoading({
-    isLoading,
-    disabled,
-    children,
-    className,
-    ...props
-}: Props) {
-    const [showLoading, setShowLoading] = useState(false)
-    // Minimum delay to show loading spinner
-    useEffect(() => {
-        let timeoutId: NodeJS.Timeout
-        if (isLoading && !showLoading) {
-            timeoutId = setTimeout(() => setShowLoading(true), 200) // 200ms delay
-        } else if (!isLoading && showLoading) {
-            setShowLoading(false)
-        }
+const ButtonWithLoading = React.forwardRef<HTMLButtonElement, Props>(
+    ({ isLoading, disabled, children, className, ...props }, ref) => {
+        const [showLoading, setShowLoading] = useState(false)
+        // Minimum delay to show loading spinner
+        useEffect(() => {
+            let timeoutId: NodeJS.Timeout
+            if (isLoading && !showLoading) {
+                timeoutId = setTimeout(() => setShowLoading(true), 200) // 200ms delay
+            } else if (!isLoading && showLoading) {
+                setShowLoading(false)
+            }
 
-        return () => {
-            clearTimeout(timeoutId)
-        }
-    }, [isLoading, showLoading])
-    return (
-        <Button
-            className={cn('flex w-20', className)}
-            disabled={showLoading ? true : disabled}
-            {...props}
-        >
-            {showLoading ? (
-                <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading
-                </>
-            ) : (
-                <>{children}</>
-            )}
-        </Button>
-    )
-}
+            return () => {
+                clearTimeout(timeoutId)
+            }
+        }, [isLoading, showLoading])
+        return (
+            <Button
+                ref={ref}
+                className={cn('flex w-20', className)}
+                disabled={showLoading ? true : disabled}
+                {...props}
+            >
+                {showLoading ? (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Loading
+                    </>
+                ) : (
+                    <>{children}</>
+                )}
+            </Button>
+        )
+    }
+)
 
 export default ButtonWithLoading

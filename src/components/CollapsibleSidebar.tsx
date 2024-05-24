@@ -30,7 +30,7 @@ export default function CollapsibleSidebar({
                 className
             )}
         >
-            <div className="sticky top-3 z-10">
+            <div className="sticky top-1/2 z-10">
                 <ArrowLeftIcon
                     width={24}
                     height={24}

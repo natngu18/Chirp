@@ -29,7 +29,7 @@ function SearchSuggestions({ suggestionParams, onSuggestionSelect }: Props) {
                     className="text-md hover:cursor-pointer"
                     onSelect={() => {
                         navigate({
-                            pathname: '/explore',
+                            pathname: '/search',
                             search: createSearchParams({
                                 q: suggestionParams.searchText,
                             }).toString(),

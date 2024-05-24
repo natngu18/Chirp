@@ -7,14 +7,17 @@ import { cn } from '@/lib/utils'
 import { useDeleteFollow } from '../api/deleteFollow'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-    isShown: boolean
+    isShown?: boolean
     userId: string
     username: string
     isFollowing: boolean
 }
 
 const FollowButton = React.forwardRef<HTMLButtonElement, Props>(
-    ({ isShown, userId, isFollowing, username, className, ...props }, ref) => {
+    (
+        { isShown = true, userId, isFollowing, username, className, ...props },
+        ref
+    ) => {
         const { firebaseUser } = useAuth()
         const { mutate: follow, isPending: isFollowPending } =
             useCreateFollow(username)
@@ -31,7 +34,6 @@ const FollowButton = React.forwardRef<HTMLButtonElement, Props>(
             // etc...
             if (isFollowing) {
                 // unfollow
-                console.log('unfollow')
                 unfollow()
             } else if (!isFollowing) {
                 // follow
