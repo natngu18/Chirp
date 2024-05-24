@@ -49,6 +49,9 @@ export const AuthProvider = ({ children }: Props) => {
             setLoading(false)
             if (currentUser) {
                 setFirebaseUser(currentUser)
+                currentUser.getIdToken().then((idToken) => {
+                    setToken(idToken)
+                })
             } else {
                 setFirebaseUser(null)
                 // storage.clearUser() // Clear user data in localStorage when Firebase user is null
@@ -57,13 +60,13 @@ export const AuthProvider = ({ children }: Props) => {
         return unsubscribe
     }, [])
 
-    useEffect(() => {
-        if (firebaseUser) {
-            firebaseUser.getIdToken().then((idToken) => {
-                setToken(idToken)
-            })
-        }
-    }, [firebaseUser])
+    // useEffect(() => {
+    //     if (firebaseUser) {
+    //         firebaseUser.getIdToken().then((idToken) => {
+    //             setToken(idToken)
+    //         })
+    //     }
+    // }, [firebaseUser])
 
     // Store user data from backend in localStorage
     useEffect(() => {

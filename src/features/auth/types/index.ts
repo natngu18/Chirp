@@ -1,14 +1,11 @@
-import { BaseEntity, Media } from '@/types'
+import { UserBriefResponse } from '@/features/user/types'
 
 export type CreateUserCommand = {
     id: string
     email: string
 }
 
-export interface UserResponse extends BaseEntity<string> {
-    username: string
+export interface UserResponse extends UserBriefResponse {
     location?: string
     bio?: string
-    avatar?: Media
-    displayName: string
 }
