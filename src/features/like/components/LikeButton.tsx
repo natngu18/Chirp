@@ -1,67 +1,35 @@
 import React from 'react'
-import { useCreateLike } from '../api/createLike'
-import { PostInfo } from '@/features/post/types'
+import { useLike } from '../api/createAndDeleteLike'
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
-import { motion } from 'framer-motion'
-import { useDeleteLike } from '../api/deleteLike'
 
 interface Props {
-    // we have multiple sources where posts are retrieved from backend,
-    // and we need to update React-query cache accordingly for optimistic update
     postId: string
-    // Should not be null when source is 'search'
-    // searchTextParam?: string
-    postInfo: PostInfo
     isLiked: boolean
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+    likeCount: number
 }
 
-function LikeButton({
-    postId,
-    // searchTextParam,
-    postInfo,
-    isLiked,
-    onClick,
-}: Props) {
-    // For optimistic update.
-    const queryKey =
-        postInfo.source === 'search'
-            ? ['postSearchResults', postInfo.sourceId]
-            : postInfo.source === 'profile'
-            ? ['userPosts', postInfo.sourceId]
-            : postInfo.source === 'profile-replies'
-            ? ['userReplies', postInfo.sourceId]
-            : ['feed']
-
-    console.log(queryKey)
-    // TODO: don't hardcode query keys
-    // TODO: could be refactored to use a single mutation function
-    const { mutate: like } = useCreateLike(postId, queryKey)
-
-    // todo implememt for profile
-    const { mutate: unlike } = useDeleteLike(postId, queryKey)
+function LikeButton({ postId, isLiked, onClick, likeCount }: Props) {
+    const { mutate } = useLike(postId)
     const handleLikeButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (isLiked) {
-            unlike()
+            mutate('unlike')
         } else if (!isLiked) {
-            like()
+            mutate('like')
         }
         if (onClick) onClick(e)
     }
-    const variants = {
-        tap: { scale: 0.8 },
-        hover: { scale: 1.2 },
-    }
 
     return (
-        <motion.button
-            whileHover="hover"
-            whileTap="tap"
-            variants={variants}
+        <button
+            className="flex group items-center"
             onClick={(e) => handleLikeButtonClick(e)}
         >
-            {isLiked ? <AiFillHeart color="red" /> : <AiOutlineHeart />}
-        </motion.button>
+            <span className="group-hover:text-red-600 rounded-full p-2 group-hover:bg-red-600/10 transition-colors duration-200">
+                {isLiked ? <AiFillHeart color="red" /> : <AiOutlineHeart />}
+            </span>
+            <span className="group-hover:text-red-600">{likeCount}</span>
+        </button>
     )
 }
 
