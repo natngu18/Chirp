@@ -7,16 +7,30 @@ import { Card } from '@/components/ui/card'
 import LikeButton from '@/features/like/components/LikeButton'
 import { forwardRef } from 'react'
 import CommentButton from './CommentButton'
+import PostImageGallery from '@/features/image/components/PostImageGallery'
 
 type Props = {
     post: PostBriefResponse
     linkDirection?: 'up' | 'down' | 'full'
     separator?: boolean
+    // Specifically set to false when in image modal view
+    displayImages?: boolean
+    // No need to have a link for post item when in post detail view
+    disablePostLink?: boolean
 }
 
 // function PostItem({ post, postInfo, linkDirection }: Props) {
 const PostItem = forwardRef<HTMLSpanElement, Props>(
-    ({ post, linkDirection, separator }, ref) => {
+    (
+        {
+            post,
+            linkDirection,
+            separator,
+            displayImages = true,
+            disablePostLink = false,
+        },
+        ref
+    ) => {
         const navigate = useNavigate()
         return (
             // fake outer link for card body
@@ -27,6 +41,7 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                     // prevent parent link from triggering
                     e.stopPropagation()
                     e.preventDefault()
+                    if (disablePostLink) return
                     // populate state with post info, so post detail page can
                     // initialize post data from cache w/ appropriate query key
                     navigate(`/post/${post.id}`)
@@ -34,12 +49,14 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                 data-href={`/profile/${post.id}`}
                 tabIndex={0}
                 role="link"
-                className="hover:cursor-pointer "
+                className={`${disablePostLink ? `` : `hover:cursor-pointer`}`}
             >
                 <Card
                     className={`px-2 flex gap-2 border-0 ${
                         separator ? `border-b-[1px]` : ``
-                    } rounded-none hover:bg-slate-50 w-full h-full min-h-72 shadow-none`}
+                    } rounded-none ${
+                        disablePostLink ? '' : 'hover:bg-slate-50'
+                    }  w-full h-full shadow-none`}
                 >
                     {/* User avatar and reply linking bar */}
                     <div className="relative flex flex-col items-center gap-1">
@@ -79,7 +96,7 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
 
                     {/* Tweet and user info */}
                     {/* padding should be same as avatar for symmetric */}
-                    <div className="py-4 text-sm flex gap-1 flex-col w-full overflow-hidden  aspect-[3/4] pr-12">
+                    <div className="py-4 text-sm flex gap-1 flex-col w-full  pr-12">
                         {/* Userinfo and date */}
                         <div className="flex  gap-1 items-center ">
                             <UserHoverCardTrigger
@@ -138,11 +155,18 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                         </div>
 
                         {/* post images */}
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYc2tkZ2-6dmEYhNAKfMLXiTCdMFpS6bNcePNFXkVYMw&s"
-                            alt="placeholder"
-                            className="w-full object-cover h-full rounded-md"
-                        />
+                        {post.medias?.length > 0 && displayImages && (
+                            <PostImageGallery
+                                images={post.medias}
+                                postId={post.id.toString()}
+                            />
+                            // <div className="overflow-hidden max-h-96   rounded-md">
+                            //     <img
+                            //         src={post.medias[0]?.url}
+                            //         className="w-full object-contain"
+                            //     />
+                            // </div>
+                        )}
 
                         <div className="flex gap-6 items-center">
                             <CommentButton
@@ -152,10 +176,8 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                             <LikeButton
                                 onClick={(e) => {
                                     e.stopPropagation()
-                                    // handleLikeButtonClick(e)
                                 }}
                                 postId={post.id.toString()}
-                                // searchTextParam={searchTextParam}
                                 isLiked={post.isLiked}
                                 likeCount={post.likeCount}
                             />

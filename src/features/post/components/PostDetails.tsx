@@ -7,11 +7,24 @@ import PostItem from './PostItem'
 import PostReplies from './PostReplies'
 import PostForm from './PostForm'
 import { Separator } from '@/components/ui/separator'
+type Props = {
+    // Should be provided when not part of the route params.
+    propPostId?: string
+    // Specifically set to false when in image modal view
+    displayImages?: boolean
+}
+function PostDetails({ propPostId, displayImages = true }: Props) {
+    const { postId: urlPostId } = useParams()
+    // NOTE: propPostId should have precedence over urlPostId,
+    // because we are capable of triggering image modal view for a post different
+    // than the one in the url.
+    const postId = propPostId ? propPostId : urlPostId
+    console.log('postid post details', postId)
 
-function PostDetails() {
-    const { postId } = useParams()
     // Loads relevant post w/ matching postId as placeholder data, if it exists in the cache.
-    const query = useGetPostAndParentPostsInfinite({ postId: postId! })
+    const query = useGetPostAndParentPostsInfinite({
+        postId: postId!,
+    })
     // Fetch next page when user scrolls to top of the page.
     const { ref: topRef, inView } = useInView()
     useEffect(() => {
@@ -55,7 +68,7 @@ function PostDetails() {
         <div className="min-h-screen flex flex-col">
             {/* Do not want to fetch data when using placeholder data,
             which has fake pagination params */}
-            {!query.isPlaceholderData && (
+            {!query.isPlaceholderData && query.hasNextPage && (
                 <div
                     ref={topRef}
                     className="min-h-[1px] flex items-center justify-center bg-transparent"
@@ -93,6 +106,7 @@ function PostDetails() {
                                 <PostItem
                                     {...itemProps}
                                     post={post}
+                                    disablePostLink={post.id == Number(postId)}
                                     linkDirection={
                                         // Render link direction if there is a post chain (multiple posts)
                                         page.items.length > 1
@@ -103,6 +117,7 @@ function PostDetails() {
                                                 : `full`
                                             : undefined
                                     }
+                                    displayImages={displayImages}
                                 />
 
                                 {/* Replies should go here, and only rendered when post.id == postId (aka last) */}

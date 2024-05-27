@@ -13,7 +13,7 @@ export type PostBriefResponse = {
     text: string
     author: BaseUserDto
     createdAt: string
-    media: Media[]
+    medias: Media[]
     parentPostAuthorUsername?: string
     childCount: number
     isLiked: boolean
