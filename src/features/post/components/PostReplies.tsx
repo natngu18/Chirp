@@ -1,15 +1,15 @@
-import { Spinner } from '@/components/Spinner'
-import { useGetUserRepliesInfinite } from '@/features/post/api/getUserReplies'
-import PostList from '@/features/post/components/PostList'
 import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useGetPostRepliesInfinite } from '../api/getPostReplies'
+import { Spinner } from '@/components/Spinner'
+import PostList from './PostList'
 
 type Props = {
-    username: string
+    postId: string
 }
 
-function UserRepliesTab({ username }: Props) {
-    const query = useGetUserRepliesInfinite({ username })
+function PostReplies({ postId }: Props) {
+    const query = useGetPostRepliesInfinite({ postId })
     const { ref, inView } = useInView()
     useEffect(() => {
         if (inView && query.hasNextPage && !query.isFetchingNextPage) {
@@ -32,7 +32,7 @@ function UserRepliesTab({ username }: Props) {
             ))}
             <div
                 ref={ref}
-                className="min-h-[1px] flex items-center justify-center bg-red-500"
+                className="min-h-[1px] flex items-center justify-center bg-transparent"
             >
                 {query.isFetchingNextPage && <Spinner />}
                 {!query.hasNextPage && <div>No more results</div>}
@@ -41,4 +41,4 @@ function UserRepliesTab({ username }: Props) {
     )
 }
 
-export default UserRepliesTab
+export default PostReplies

@@ -58,10 +58,12 @@ const postSchema = z.object({
 type Props = {
     placeholder?: string
     buttonText?: string
+    parentPostId?: string
 }
 function PostForm({
     placeholder = 'What are you thinking?',
     buttonText = 'Post',
+    parentPostId,
 }: Props) {
     const form = useForm<z.infer<typeof postSchema>>({
         reValidateMode: 'onChange',
@@ -71,7 +73,7 @@ function PostForm({
             text: '',
         },
     })
-    const { mutate, isPending } = useCreatePost()
+    const { mutate, isPending } = useCreatePost(parentPostId)
     const [remainingText, setRemainingText] = useState(MAX_POST_TEXT_LENGTH)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -110,7 +112,7 @@ function PostForm({
         form.setValue('images', updatedFileList, { shouldValidate: true })
     }
     return (
-        <div className="flex flex-col gap-2 px-4">
+        <div className="flex flex-col gap-2 px-4 py-2">
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}

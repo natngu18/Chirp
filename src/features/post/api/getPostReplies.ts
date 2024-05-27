@@ -4,15 +4,15 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { PostBriefResponse } from '../types'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { postQueryKeys } from '../queries'
-export const getUserReplies = async ({
+export const getPostReplies = async ({
     pageNumber = 1,
-    pageSize = 2,
-    username,
+    pageSize = 10,
+    postId,
     token,
-}: PaginationParams & { username: string; token: string }): Promise<
+}: PaginationParams & { postId: string; token: string }): Promise<
     PaginatedList<PostBriefResponse>
 > => {
-    const response = await axiosInstance.get(`users/${username}/replies`, {
+    const response = await axiosInstance.get(`posts/${postId}/replies`, {
         // Attach token to calculate if current user has liked the post
         headers: {
             Authorization: `Bearer ${token}`,
@@ -25,21 +25,20 @@ export const getUserReplies = async ({
     return response.data
 }
 
-export const useGetUserRepliesInfinite = (
-    params: PaginationParams & { username: string }
+export const useGetPostRepliesInfinite = (
+    params: PaginationParams & { postId: string }
 ) => {
     const { token } = useAuth()
     return useInfiniteQuery({
-        // queryKey: ['userReplies', params.username],
-        queryKey: postQueryKeys.userReplies(params.username),
+        queryKey: postQueryKeys.postReplies(params.postId),
         queryFn: ({ pageParam = 1 }) =>
-            getUserReplies({ ...params, pageNumber: pageParam, token }),
+            getPostReplies({ ...params, pageNumber: pageParam, token }),
         getNextPageParam: (lastPageParams) =>
             lastPageParams.hasNextPage
                 ? lastPageParams.pageNumber + 1
                 : undefined,
         initialPageParam: 1,
-        enabled: !!params.username && !!token,
+        enabled: !!params.postId && !!token,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
     })

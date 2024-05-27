@@ -1,14 +1,19 @@
 import { axiosInstance } from '@/lib/axios'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CreatePostCommand } from '../types'
 import { useAuth } from '@/features/auth/context/AuthContext'
+import { postQueryKeys } from '../queries'
 
-// Will return the user's uniquely generated username
 export const createPost = async (
     formData: FormData,
-    token: string
+    token: string,
+    postId?: string
 ): Promise<string> => {
-    const response = await axiosInstance.post(`/posts`, formData, {
+    let route = `/posts`
+    if (postId) {
+        route = `/posts/${postId}`
+    }
+    const response = await axiosInstance.post(route, formData, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
@@ -18,7 +23,6 @@ export const createPost = async (
     return response.data
 }
 function createFormData(request: CreatePostCommand): FormData {
-    console.log('request: ', request)
     const formData = new FormData()
     formData.append('Text', request.text)
     if (request.parentPostId) {
@@ -30,16 +34,16 @@ function createFormData(request: CreatePostCommand): FormData {
     return formData
 }
 
-export const useCreatePost = () => {
+export const useCreatePost = (postId?: string) => {
     const { token } = useAuth()
+    const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (request: CreatePostCommand) =>
-            createPost(createFormData(request), token),
-        onSuccess: (data) => {
-            console.log('create post data', data)
+            createPost(createFormData(request), token, postId),
+        onSuccess: () => {
+            // Invalidate all post lists queries
+            queryClient.invalidateQueries({ queryKey: postQueryKeys.lists() })
         },
-        onError: (error) => {
-            console.log('create error: ', error)
-        },
+        onError: (error) => {},
     })
 }

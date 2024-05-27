@@ -11,7 +11,6 @@ import UserTabs from './UserTabs'
 
 export const UserProfile = () => {
     const params = useParams()
-
     const { data: user } = useGetUserByUsername(params.username!)
     const [headerRef, inView] = useInView({
         triggerOnce: false,
@@ -19,7 +18,6 @@ export const UserProfile = () => {
         initialInView: true,
     })
 
-    console.log(user)
     const navigate = useNavigate()
 
     if (!user)
@@ -29,6 +27,7 @@ export const UserProfile = () => {
                 <Spinner />
             </div>
         )
+
     return (
         <div className="relative min-h-screen flex flex-col">
             {/* Fixed header */}

@@ -1,5 +1,6 @@
 import { Spinner } from '@/components/Spinner'
 import { AuthenticationGuard } from '@/features/auth/components/AuthenticationGuard'
+import PostDetails from '@/features/post/components/PostDetails'
 import { TwitterLayout } from '@/layout/TwitterLayout'
 import { lazyImport } from '@/lib/lazyImport'
 import { Suspense } from 'react'
@@ -55,6 +56,10 @@ export const routesForAuthenticatedOnly = [
             {
                 path: 'search',
                 element: <SearchPage />,
+            },
+            {
+                path: 'post/:postId',
+                element: <PostDetails />,
             },
         ],
     },

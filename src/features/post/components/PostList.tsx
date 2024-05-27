@@ -2,28 +2,22 @@
 // This should not do the fetching...
 // it can render following posts, search results, user posts, etc.
 import React from 'react'
-import { PostBriefResponse, PostInfo } from '../types'
+import { PostBriefResponse } from '../types'
 import PostItem from './PostItem'
-import { Separator } from '@/components/ui/separator'
 
 type Props = {
     posts: PostBriefResponse[]
-
-    // Posts can be obtained from different sources.
-    // This is used to update cache key for optimistic updates, depending on source
-    postInfo: PostInfo
 }
 
-function PostList({ posts, postInfo }: Props) {
+function PostList({ posts }: Props) {
     return (
-        <>
-            {posts.map((post, index) => (
+        <div>
+            {posts.map((post) => (
                 <React.Fragment key={post.id}>
-                    <PostItem post={post} postInfo={postInfo} />
-                    {index < posts.length - 1 && <Separator />}
+                    <PostItem post={post} separator={true} />
                 </React.Fragment>
             ))}
-        </>
+        </div>
     )
 }
 

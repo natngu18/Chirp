@@ -25,25 +25,31 @@ function PostSearchSuggestionList({ searchText }: Props) {
         )
     }
 
+    if (query.data?.pages[0].items.length === 0) {
+        return (
+            <div className="flex flex-col items-center w-full justify-center p-8">
+                <h1 className="text-2xl font-bold">
+                    No results for "{searchText}"
+                </h1>
+                <span className="text-gray-500">
+                    Try searching for something else.
+                </span>
+            </div>
+        )
+    }
+
     return (
-        <>
+        <div>
             {query.data?.pages.map((page) => (
-                <PostList
-                    key={page.pageNumber}
-                    posts={page.items}
-                    postInfo={{ source: 'search', sourceId: searchText }}
-                    // source="search"
-                    // searchTextParam={searchText}
-                />
+                <PostList key={page.pageNumber} posts={page.items} />
             ))}
             <div
                 ref={ref}
-                className="flex items-center justify-center bg-red-500"
+                className="min-h-[1px] flex items-center justify-center bg-transparent"
             >
                 {query.isFetchingNextPage && <Spinner />}
-                {!query.hasNextPage && <div>No more results</div>}
             </div>
-        </>
+        </div>
     )
 }
 

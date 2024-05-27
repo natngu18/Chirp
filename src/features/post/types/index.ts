@@ -8,8 +8,8 @@ export type CreatePostCommand = {
 }
 
 export type PostBriefResponse = {
-    // id: number
-    id: string
+    id: number
+    // id: string
     text: string
     author: BaseUserDto
     createdAt: string
@@ -28,10 +28,15 @@ export type ParentAndReplyResponse = {
 // we have multiple sources where posts are retrieved from backend,
 // therefore their cache keys are different.
 // This can be used to update React-query cache accordingly for optimistic updates
-export type PostSource = 'feed' | 'profile' | 'search' | 'profile-replies'
-export type PostInfo = {
-    source: PostSource
-    // Source id is the username for profile, and search text for search
-    // it is the identifier for query cache for posts
-    sourceId: string
-}
+// export type PostSource =
+//     | 'feed'
+//     | 'profile'
+//     | 'search'
+//     | 'profile-replies'
+//     | 'post-details'
+// export type PostInfo = {
+//     source: PostSource
+//     // Source id is the username for profile, and search text for search
+//     // it is the identifier for query cache for posts
+//     sourceId: string
+// }

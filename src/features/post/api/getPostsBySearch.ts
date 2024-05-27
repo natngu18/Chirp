@@ -3,6 +3,7 @@ import { PaginatedList, PaginationParams } from '@/types'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { PostBriefResponse } from '../types'
 import { useAuth } from '@/features/auth/context/AuthContext'
+import { postQueryKeys } from '../queries'
 export const getPostsBySearch = async ({
     pageNumber = 1,
     pageSize = 5,
@@ -30,7 +31,8 @@ export const useGetPostsBySearchInfinite = (
 ) => {
     const { token } = useAuth()
     return useInfiniteQuery({
-        queryKey: ['postSearchResults', params.searchText],
+        // queryKey: ['postSearchResults', params.searchText],
+        queryKey: postQueryKeys.searchResults(params.searchText),
         queryFn: ({ pageParam = 1 }) =>
             getPostsBySearch({ ...params, pageNumber: pageParam, token }),
         getNextPageParam: (lastPageParams) =>
