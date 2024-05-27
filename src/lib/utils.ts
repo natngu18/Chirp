@@ -26,17 +26,28 @@ export const formatInTimeZone = (date: number | Date, fmt: string) =>
         fmt
     )
 
-import { differenceInHours, differenceInYears, parseISO } from 'date-fns'
+import {
+    parseISO,
+    differenceInHours,
+    differenceInYears,
+    differenceInMinutes,
+    differenceInSeconds,
+} from 'date-fns'
 
-// Meant to be used for a post creation date only
 export function formatPostUtcDate(dateString: string) {
     const date = parseISO(`${dateString}Z`)
     const now = new Date()
 
+    const secondsDifference = differenceInSeconds(now, date)
+    const minutesDifference = differenceInMinutes(now, date)
     const hoursDifference = differenceInHours(now, date)
     const yearsDifference = differenceInYears(now, date)
 
-    if (hoursDifference < 24) {
+    if (secondsDifference < 60) {
+        return `${secondsDifference}s`
+    } else if (minutesDifference < 60) {
+        return `${minutesDifference}m`
+    } else if (hoursDifference < 24) {
         return `${hoursDifference}h`
     } else if (yearsDifference < 1) {
         return format(date, 'MMM d')
