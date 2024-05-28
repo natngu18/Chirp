@@ -55,3 +55,6 @@ export function formatPostUtcDate(dateString: string) {
         return format(date, 'MMM d, yyyy')
     }
 }
+
+export const capitalize = <T extends string>(s: T) =>
+    (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>
