@@ -14,7 +14,7 @@ type Props = {
     medias: Media[]
     initialIndex?: number
 }
-function ImageModalCarousel({ medias, initialIndex = 0 }: Props) {
+function PostImageModalCarousel({ medias, initialIndex = 0 }: Props) {
     const [api, setApi] = React.useState<CarouselApi>()
     const [canScrollNext, setCanScrollNext] = React.useState(false)
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
@@ -45,6 +45,15 @@ function ImageModalCarousel({ medias, initialIndex = 0 }: Props) {
         })
     }, [api])
 
+    // Embla carousel AutoHeight calculates slide heights when initialized.
+    // It will calculate a 0 height if the images are not loaded.
+    // This ensures that the carousel is reinitialized with proper heights when images are loaded.
+    // (Call this everytime an image loads, since keeping track of all images loaded seems to not work)
+    const reinitCarousel = () => {
+        if (api) {
+            api.reInit()
+        }
+    }
     return (
         <div className="relative w-full " onClick={(e) => e.stopPropagation()}>
             <Carousel
@@ -53,10 +62,18 @@ function ImageModalCarousel({ medias, initialIndex = 0 }: Props) {
                 plugins={[AutoHeight()]}
                 className="w-full"
             >
-                <CarouselContent className="items-center">
+                <CarouselContent className="items-center h-fit">
                     {medias.map((media, index) => (
                         <CarouselItem key={index}>
-                            <img src={media.url} className="w-full h-full" />
+                            <img
+                                src={media.url}
+                                className="w-full h-full"
+                                loading="eager"
+                                referrerPolicy="no-referrer"
+                                onLoad={() => {
+                                    reinitCarousel()
+                                }}
+                            />
                         </CarouselItem>
                     ))}
                 </CarouselContent>
@@ -71,4 +88,4 @@ function ImageModalCarousel({ medias, initialIndex = 0 }: Props) {
     )
 }
 
-export default ImageModalCarousel
+export default PostImageModalCarousel

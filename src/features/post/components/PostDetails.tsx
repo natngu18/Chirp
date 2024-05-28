@@ -19,7 +19,6 @@ function PostDetails({ propPostId, displayImages = true }: Props) {
     // because we are capable of triggering image modal view for a post different
     // than the one in the url.
     const postId = propPostId ? propPostId : urlPostId
-    console.log('postid post details', postId)
 
     // Loads relevant post w/ matching postId as placeholder data, if it exists in the cache.
     const query = useGetPostAndParentPostsInfinite({

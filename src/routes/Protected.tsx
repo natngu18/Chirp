@@ -1,4 +1,5 @@
 import { Spinner } from '@/components/Spinner'
+import { PostModalProvider } from '@/components/context/PostModalContext'
 import { AuthenticationGuard } from '@/features/auth/components/AuthenticationGuard'
 import PostDetails from '@/features/post/components/PostDetails'
 import { TwitterLayout } from '@/layout/TwitterLayout'
@@ -19,17 +20,20 @@ const { UserProfile } = lazyImport(
 )
 const MainApp = () => {
     return (
-        <TwitterLayout>
-            <Suspense
-                fallback={
-                    <div className="flex size-full items-center justify-center">
-                        <Spinner size="xl" />
-                    </div>
-                }
-            >
-                <Outlet />
-            </Suspense>
-        </TwitterLayout>
+        // Modal provider needs to be wrapped by RouterProvider, since it uses useLocation.
+        <PostModalProvider>
+            <TwitterLayout>
+                <Suspense
+                    fallback={
+                        <div className="flex size-full items-center justify-center">
+                            <Spinner size="xl" />
+                        </div>
+                    }
+                >
+                    <Outlet />
+                </Suspense>
+            </TwitterLayout>
+        </PostModalProvider>
     )
 }
 export const routesForAuthenticatedOnly = [
@@ -51,7 +55,13 @@ export const routesForAuthenticatedOnly = [
             },
             {
                 path: 'profile/:username',
-                element: <UserProfile />,
+                element: <Outlet />,
+                children: ['replies', `posts`, 'media', 'likes', ''].map(
+                    (path) => ({
+                        path,
+                        element: <UserProfile />,
+                    })
+                ),
             },
             {
                 path: 'search',

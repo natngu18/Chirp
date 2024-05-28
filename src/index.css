@@ -80,6 +80,8 @@
 }
 
 .embla__container {
+    display: flex;
+
     transition: height 0.2s;
     align-items: flex-start; /* Add this */
 }
