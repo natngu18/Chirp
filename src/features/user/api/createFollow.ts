@@ -3,7 +3,6 @@ import { axiosInstance } from '@/lib/axios'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { UserDetailedResponse } from '../types'
 
-// Will return the user's uniquely generated username
 export const createFollow = async (username: string): Promise<void> => {
     const token = await auth.currentUser?.getIdToken()
     const response = await axiosInstance.post(

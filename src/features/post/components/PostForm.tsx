@@ -20,14 +20,9 @@ import MediaPreview from './MediaPreview'
 import { toast } from '@/components/ui/use-toast'
 import { useCreatePost } from '../api/createPost'
 const MAX_POST_TEXT_LENGTH = 200
-const ACCEPTED_IMAGE_TYPES = [
-    'image/jpeg',
-    'image/jpg',
-    'image/png',
-    'image/webp',
-]
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 const MAX_IMAGE_SIZE_MB = 4
-const MAX_NUMBER_OF_IMAGES = 4
+const MAX_NUMBER_OF_IMAGES_FOR_POST = 4
 
 const postSchema = z.object({
     text: z
@@ -40,7 +35,9 @@ const postSchema = z.object({
     images: z
         .custom<FileList>()
         .refine((files) => {
-            return Array.from(files ?? []).length <= MAX_NUMBER_OF_IMAGES
+            return (
+                Array.from(files ?? []).length <= MAX_NUMBER_OF_IMAGES_FOR_POST
+            )
         }, 'Please upload a maximum of 4 images')
         .refine((files) => {
             return Array.from(files ?? []).every(
@@ -75,6 +72,7 @@ function PostForm({
     })
     const { mutate, isPending } = useCreatePost(parentPostId)
     const [remainingText, setRemainingText] = useState(MAX_POST_TEXT_LENGTH)
+    // Used to trigger file input w/ button
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const text = form.watch('text')
@@ -136,39 +134,54 @@ function PostForm({
                                         onChange={(event) => {
                                             // User has selected files
                                             if (event.target.files) {
-                                                // Only set images if resulting number of images is valid
-                                                if (
-                                                    event.target.files.length +
-                                                        (images
-                                                            ? images.length
-                                                            : 0) <=
-                                                    MAX_NUMBER_OF_IMAGES
-                                                ) {
-                                                    // Convert the FileList object to an array
-                                                    const newFiles = Array.from(
-                                                        event.target.files
+                                                // Convert the FileList object to an array
+                                                const newFiles = Array.from(
+                                                    event.target.files
+                                                )
+                                                // Check if any of the new files are larger than the maximum size
+                                                const isAnyFileTooLarge =
+                                                    newFiles.some(
+                                                        (file) =>
+                                                            file.size >
+                                                            MAX_IMAGE_SIZE_MB *
+                                                                1024 *
+                                                                1024
                                                     )
-
-                                                    const currentFiles =
-                                                        // Convert the FileList object to an array, value can be null which causes error
-                                                        Array.from(value || [])
-
-                                                    // Append the new files to the existing filesArray
-                                                    const updatedFilesArray = [
-                                                        ...currentFiles,
-                                                        ...newFiles,
-                                                    ]
-                                                    onChange(updatedFilesArray)
-                                                }
-                                                // Display toast for error in botom middle of screen
-                                                else {
+                                                if (isAnyFileTooLarge) {
                                                     toast({
                                                         className: cn(
                                                             'fixed md:max-w-[420px] bottom-3 left-1/2 transform -translate-x-1/2'
                                                         ),
-                                                        description: `Please choose up to 4 photos.`,
+                                                        description: `Please choose files smaller than ${MAX_IMAGE_SIZE_MB}MB.`,
                                                     })
+                                                    return
                                                 }
+                                                // Only set images if resulting number of images is valid (user can select multiple imgs)
+                                                const isValidNumberOfImages =
+                                                    newFiles.length +
+                                                        (images
+                                                            ? images.length
+                                                            : 0) <=
+                                                    MAX_NUMBER_OF_IMAGES_FOR_POST
+                                                if (!isValidNumberOfImages) {
+                                                    toast({
+                                                        className: cn(
+                                                            'fixed md:max-w-[420px] bottom-3 left-1/2 transform -translate-x-1/2'
+                                                        ),
+                                                        description: `Please choose up to ${MAX_NUMBER_OF_IMAGES_FOR_POST} photos.`,
+                                                    })
+                                                    return
+                                                }
+
+                                                const currentFiles = Array.from(
+                                                    value || []
+                                                )
+                                                // Append the new files to the existing filesArray
+                                                const updatedFilesArray = [
+                                                    ...currentFiles,
+                                                    ...newFiles,
+                                                ]
+                                                onChange(updatedFilesArray)
                                             }
                                         }}
                                     />
@@ -229,7 +242,7 @@ function PostForm({
                 <CircularButton
                     onClick={() => fileInputRef?.current?.click()}
                     className="p-2"
-                    disabled={images?.length === MAX_NUMBER_OF_IMAGES}
+                    disabled={images?.length === MAX_NUMBER_OF_IMAGES_FOR_POST}
                 >
                     <ImageIcon size={20} />
                 </CircularButton>

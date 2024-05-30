@@ -8,6 +8,7 @@ import LikeButton from '@/features/like/components/LikeButton'
 import { forwardRef } from 'react'
 import CommentButton from './CommentButton'
 import PostImageGallery from '@/features/image/components/PostImageGallery'
+import Image from '@/features/image/components/Image'
 
 type Props = {
     post: PostBriefResponse
@@ -32,6 +33,7 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
         ref
     ) => {
         const navigate = useNavigate()
+
         return (
             // fake outer link for card body
             <span
@@ -42,8 +44,6 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                     e.stopPropagation()
                     e.preventDefault()
                     if (disablePostLink) return
-                    // populate state with post info, so post detail page can
-                    // initialize post data from cache w/ appropriate query key
                     navigate(`/post/${post.id}`)
                 }}
                 data-href={`/profile/${post.id}`}
@@ -65,7 +65,6 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                             linkDirection === 'full') && (
                             <div className="absolute bg-gray-300 w-1 rounded-b-full h-3"></div>
                         )}
-                        {/* Disable top padding for user image, if column is up direction, for symmetry */}
                         <div className="pt-4">
                             {/* User Profile Image */}
                             <UserHoverCardTrigger
@@ -75,14 +74,12 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                                     to={`/profile/${post.author.username}`}
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                                        <img
-                                            src={post.author.avatar.url}
-                                            alt={post.author.username}
-                                            referrerPolicy="no-referrer"
-                                            className="aspect-square h-full w-full clickable-object"
-                                        />
-                                    </span>
+                                    <Image
+                                        className="h-10 w-10 clickable-object"
+                                        src={post.author.avatar.url}
+                                        alt={post.author.username}
+                                        rounded={true}
+                                    />
                                 </Link>
                             </UserHoverCardTrigger>
                         </div>
@@ -160,12 +157,6 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                                 images={post.medias}
                                 postId={post.id.toString()}
                             />
-                            // <div className="overflow-hidden max-h-96   rounded-md">
-                            //     <img
-                            //         src={post.medias[0]?.url}
-                            //         className="w-full object-contain"
-                            //     />
-                            // </div>
                         )}
 
                         <div className="flex gap-6 items-center">

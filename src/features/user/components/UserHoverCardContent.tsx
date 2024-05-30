@@ -2,11 +2,13 @@ import { useGetUserByUsername } from '../api/getUserByUsername'
 import { Spinner } from '@/components/Spinner'
 import FollowButton from './FollowButton'
 import { Link } from 'react-router-dom'
+import Image from '@/features/image/components/Image'
+import { useAuth } from '@/features/auth/context/AuthContext'
 
 type Props = { username: string }
 function UserHoverCardContent({ username }: Props) {
     const { data: user, isLoading } = useGetUserByUsername(username)
-
+    const { firebaseUser } = useAuth()
     if (isLoading || !user)
         return (
             <div className="flex items-center justify-center h-[75px]">
@@ -17,21 +19,20 @@ function UserHoverCardContent({ username }: Props) {
         <div className="flex flex-col gap-2 w-full">
             <div className="flex justify-between">
                 <Link to={`/profile/${username}`}>
-                    <span className="flex h-16 w-16 shrink-0 overflow-hidden rounded-full">
-                        <img
-                            src={user.avatar.url}
-                            alt={user.username}
-                            referrerPolicy="no-referrer"
-                            className="aspect-square h-full w-full clickable-object"
-                        />
-                    </span>
+                    <Image
+                        className="h-16 w-16 clickable-object"
+                        src={user.avatar.url}
+                        alt={user.username}
+                        rounded={true}
+                    />
                 </Link>
-                <FollowButton
-                    className="h-8"
-                    userId={user.id}
-                    isFollowing={user.isFollowing}
-                    username={user.username}
-                />
+                {firebaseUser?.uid !== user.id && (
+                    <FollowButton
+                        className="h-8"
+                        isFollowing={user.isFollowing}
+                        username={user.username}
+                    />
+                )}
             </div>
             <div className="flex flex-col">
                 <Link to={`/profile/${username}`}>

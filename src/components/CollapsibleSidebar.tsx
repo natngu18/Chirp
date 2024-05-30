@@ -46,7 +46,7 @@ export default function CollapsibleSidebar({
                 <div className="px-3 py-2">
                     <div className="mt-3 space-y-1">
                         <SideNav
-                            className="text-background opacity-0 transition-all duration-300 group-hover:z-50 group-hover:ml-4 group-hover:rounded group-hover:bg-foreground group-hover:p-2 group-hover:opacity-100"
+                            className="text-background opacity-0 transition-all duration-300 group-hover:z-50  group-hover:rounded group-hover:bg-foreground group-hover:p-1 group-hover:opacity-100 text-xs absolute -bottom-1/4 left-1/2 transform -translate-x-1/2  "
                             items={navItems}
                         />
                     </div>

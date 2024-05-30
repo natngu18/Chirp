@@ -7,7 +7,7 @@ export const HomePage = () => {
     const { firebaseUser: user } = useAuth()
     console.log('user: ', user)
     return (
-        <div className="h-[2000px] pt-4 flex flex-col gap-3">
+        <div className=" pt-4 flex flex-col gap-3">
             {/* TODO: complete homepage, and postform */}
             <PostForm />
             <Separator />

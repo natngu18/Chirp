@@ -11,6 +11,7 @@ type Props = {
 function UserPostsTab({ username }: Props) {
     const query = useGetUserOriginalPostsInfinite({ username })
     const { ref, inView } = useInView()
+
     useEffect(() => {
         if (inView && query.hasNextPage && !query.isFetchingNextPage) {
             query.fetchNextPage()
@@ -28,16 +29,11 @@ function UserPostsTab({ username }: Props) {
     return (
         <>
             {query.data?.pages.map((page) => (
-                <PostList
-                    key={page.pageNumber}
-                    posts={page.items}
-                    postInfo={{ source: 'profile', sourceId: username }}
-                    // source="profile"
-                />
+                <PostList key={page.pageNumber} posts={page.items} />
             ))}
             <div
                 ref={ref}
-                className="flex items-center justify-center bg-red-500"
+                className="min-h-[1px] flex items-center justify-center bg-transparent"
             >
                 {query.isFetchingNextPage && <Spinner />}
                 {!query.hasNextPage && <div>No more results</div>}

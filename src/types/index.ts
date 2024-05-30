@@ -4,7 +4,8 @@ export type BaseEntity<TId> = {
     updatedAt: string
 }
 
-export interface Media extends BaseEntity<number> {
+// export interface Media extends BaseEntity<number> {
+export interface Media {
     url: string
     type: MediaType
 }

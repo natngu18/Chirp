@@ -11,7 +11,7 @@ function CircularButton({ children, className, ...props }: Props) {
         <Button
             variant={'ghost'}
             className={cn(
-                'relative h-fit rounded-full p-1 hover:bg-gray-50/75  transition-colors duration-400 ease-in-out',
+                'relative h-fit rounded-full p-1 bg-gray-50/75  transition-colors duration-400 ease-in-out',
                 className
             )}
             {...props}

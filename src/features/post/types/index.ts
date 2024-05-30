@@ -25,18 +25,7 @@ export type ParentAndReplyResponse = {
     parentPost: PostBriefResponse
 }
 
-// we have multiple sources where posts are retrieved from backend,
-// therefore their cache keys are different.
-// This can be used to update React-query cache accordingly for optimistic updates
-// export type PostSource =
-//     | 'feed'
-//     | 'profile'
-//     | 'search'
-//     | 'profile-replies'
-//     | 'post-details'
-// export type PostInfo = {
-//     source: PostSource
-//     // Source id is the username for profile, and search text for search
-//     // it is the identifier for query cache for posts
-//     sourceId: string
-// }
+export type PostMediasResponse = {
+    postId: number
+    medias: Media[]
+}

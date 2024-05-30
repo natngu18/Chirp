@@ -8,6 +8,8 @@ import {
 import { PaginatedList } from '@/types'
 import { PostBriefResponse } from '@/features/post/types'
 import { postQueryKeys } from '@/features/post/queries'
+import { useToast } from '@/components/ui/use-toast'
+import { useAuth } from '@/features/auth/context/AuthContext'
 
 export const createLike = async (postId: string): Promise<void> => {
     const token = await auth.currentUser?.getIdToken()
@@ -30,6 +32,8 @@ export const deleteLike = async (postId: string): Promise<void> => {
 
 export const useLike = (postId: string) => {
     const queryClient = useQueryClient()
+    const { appUser } = useAuth()
+    const { toast } = useToast()
     return useMutation({
         mutationFn: (action: 'like' | 'unlike') =>
             action === 'like' ? createLike(postId) : deleteLike(postId),
@@ -45,7 +49,6 @@ export const useLike = (postId: string) => {
                         | InfiniteData<PaginatedList<PostBriefResponse>>
                         | undefined
                 ) => {
-                    console.log('oldData', oldData)
                     // If oldData is undefined, return undefined
                     if (!oldData) {
                         return undefined
@@ -70,10 +73,24 @@ export const useLike = (postId: string) => {
                 }
             )
         },
+        onSuccess: () => {
+            // Invalidate current user's liked posts when like/unlike is successful
+            if (appUser && appUser.username) {
+                queryClient.invalidateQueries({
+                    queryKey: postQueryKeys.userLikedPosts(appUser.username),
+                    refetchType: 'inactive', // by default invalidateQueries() only forces refetch for active queries
+                })
+            }
+        },
         onError: () => {
             queryClient.invalidateQueries({
                 queryKey: postQueryKeys.lists(),
-                // type: 'inactive',
+                type: 'inactive',
+            })
+            toast({
+                title: 'An error occurred',
+                description: 'Something went wrong',
+                variant: 'destructive',
             })
         },
         // Always refetch after error or success:

@@ -7,13 +7,17 @@ import PostItem from './PostItem'
 import PostReplies from './PostReplies'
 import PostForm from './PostForm'
 import { Separator } from '@/components/ui/separator'
+
 type Props = {
     // Should be provided when not part of the route params.
     propPostId?: string
     // Specifically set to false when in image modal view
-    displayImages?: boolean
+    displayImagesForSpecificPost?: boolean
 }
-function PostDetails({ propPostId, displayImages = true }: Props) {
+function PostDetails({
+    propPostId,
+    displayImagesForSpecificPost = true,
+}: Props) {
     const { postId: urlPostId } = useParams()
     // NOTE: propPostId should have precedence over urlPostId,
     // because we are capable of triggering image modal view for a post different
@@ -32,25 +36,6 @@ function PostDetails({ propPostId, displayImages = true }: Props) {
         }
     }, [inView, query])
 
-    const postRef = useRef<HTMLDivElement>(null)
-
-    // Scroll to relevant post only once, and when data is available.
-    const [hasScrolled, setHasScrolled] = useState(false)
-
-    // Allows for ability to re-scroll to relevant post when postId changes.
-    useEffect(() => {
-        setHasScrolled(false)
-    }, [postId])
-
-    useEffect(() => {
-        // Do not do one-time scroll to relevant post if data is placeholder data.
-        if (!query.isPlaceholderData && query.data && !hasScrolled) {
-            console.log('scropll on query.data', query.data)
-
-            postRef.current?.scrollIntoView()
-            setHasScrolled(true)
-        }
-    }, [query, hasScrolled])
     if (query.isLoading || !query.data) {
         return (
             <div className="flex items-center w-full justify-center">
@@ -59,10 +44,6 @@ function PostDetails({ propPostId, displayImages = true }: Props) {
         )
     }
 
-    // could pass post source from navigation state (not params)
-    // and initialize useQuery initialdata w/ specific post from there if it exists...
-
-    // TODO: implement twitter details that loads parents w/ newly created endpoint.
     return (
         <div className="min-h-screen flex flex-col">
             {/* Do not want to fetch data when using placeholder data,
@@ -77,22 +58,18 @@ function PostDetails({ propPostId, displayImages = true }: Props) {
             )}
 
             {/* Reverse, so new pages appear on top */}
-            {/* TODO: Rendering of new pages buggy */}
+            {/* Parent pages appear on top */}
             {query.data?.pages
                 .slice()
                 .reverse()
-                .map((page) =>
+                .map((page, pageIndex, allPages) =>
                     /* Last post is the post w/ id of "postId" */
-                    page.items?.map((post, index) => {
+                    page.items?.map((post, postIndex) => {
                         // Initial data of query could be undefined if post is not found in cache.
                         if (!post) return null
-                        // TODO: lots of logic for postid == postId, should just conditoinally render components based on that instead of checking everywhere..
-                        // also, complete post replies.
-                        //  attach postRef to relevant post
-                        const itemProps =
-                            post.id == Number(postId) ? { ref: postRef } : {}
+
                         return (
-                            // Provide spacing for current post so it appears perfectly at top of the viewport when scrolled to.
+                            // Provide spacing for relevant post so it appears perfectly at top of the viewport when scrolled to.
                             <div
                                 key={post.id}
                                 className={
@@ -101,25 +78,32 @@ function PostDetails({ propPostId, displayImages = true }: Props) {
                                         : ``
                                 }
                             >
-                                {/* TODO: test out linking... then do replies. */}
                                 <PostItem
-                                    {...itemProps}
                                     post={post}
                                     disablePostLink={post.id == Number(postId)}
                                     linkDirection={
                                         // Render link direction if there is a post chain (multiple posts)
-                                        page.items.length > 1
-                                            ? index == 0
+                                        page.items.length > 1 ||
+                                        allPages.length > 1
+                                            ? pageIndex === 0 && postIndex === 0
                                                 ? `down`
-                                                : index == page.items.length - 1
+                                                : pageIndex ===
+                                                      allPages.length - 1 &&
+                                                  postIndex ===
+                                                      page.items.length - 1
                                                 ? `up`
                                                 : `full`
                                             : undefined
                                     }
-                                    displayImages={displayImages}
+                                    // Display images only relevant for the specified post
+                                    displayImages={
+                                        post.id == Number(postId)
+                                            ? displayImagesForSpecificPost
+                                            : true
+                                    }
                                 />
 
-                                {/* Replies should go here, and only rendered when post.id == postId (aka last) */}
+                                {/* Rendered only below the relevant post (when post.id == postId (aka last)) */}
                                 {post.id == Number(postId) && (
                                     <>
                                         <PostForm

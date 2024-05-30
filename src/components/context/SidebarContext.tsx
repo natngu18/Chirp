@@ -27,7 +27,7 @@ export const useSidebar = () => {
     const context = useContext(SidebarStateContext)
 
     if (!context) {
-        throw new Error('useSidebar must be used inside the ThemeProvider')
+        throw new Error('useSidebar must be used inside the SidebarProvider')
     }
 
     return context

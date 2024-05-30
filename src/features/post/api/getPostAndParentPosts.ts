@@ -16,7 +16,7 @@ export const getPostAndParentPosts = async ({
 }: PaginationParams & { postId: string; token: string }): Promise<
     PaginatedList<PostBriefResponse>
 > => {
-    const response = await axiosInstance.get(`posts/${postId}/parents`, {
+    const response = await axiosInstance.get(`posts/${postId}`, {
         // Attach token to calculate if current user has liked the post
         headers: {
             Authorization: `Bearer ${token}`,
