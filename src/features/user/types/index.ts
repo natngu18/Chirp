@@ -17,4 +17,14 @@ export interface BaseUserDto extends BaseEntity<string> {
 export interface UserDetailedResponse extends UserResponse {
     followersCount: number
     followingsCount: number
+    backgroundImage: Media
+}
+
+export type UpdateUserCommand = {
+    displayName?: string
+    bio?: string
+    location?: string
+    avatar?: File
+    backgroundImage?: File
+    deleteBackgroundImage: boolean
 }

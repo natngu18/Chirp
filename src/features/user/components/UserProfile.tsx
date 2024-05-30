@@ -1,28 +1,32 @@
 import { useNavigate, useParams } from 'react-router'
 import { useInView } from 'react-intersection-observer'
 import CircularButton from '@/components/CircularButton'
-import { ArrowLeftIcon, CalendarIcon } from 'lucide-react'
+import { ArrowLeftIcon, CalendarIcon, MapPin } from 'lucide-react'
 import FollowButton from './FollowButton'
 import { formatInTimeZone } from '@/lib/utils'
 import { parseISO } from 'date-fns'
 import { useGetUserByUsername } from '../api/getUserByUsername'
 import { Spinner } from '@/components/Spinner'
 import UserTabs from './UserTabs'
+import { useAuth } from '@/features/auth/context/AuthContext'
+import { Button } from '@/components/ui/button'
+import EditProfileModal from './EditProfileModalTrigger'
+import Image from '../../image/components/Image'
 
 export const UserProfile = () => {
+    const { firebaseUser } = useAuth()
     const params = useParams()
     const { data: user } = useGetUserByUsername(params.username!)
     const [headerRef, inView] = useInView({
         triggerOnce: false,
         threshold: 0,
-        initialInView: true,
+        initialInView: true, // Follow button in fixed header should not be shown initially
     })
 
     const navigate = useNavigate()
 
     if (!user)
         return (
-            // TODO use loading skeletons
             <div className="min-h-screen flex flex-col items-center justify-center">
                 <Spinner />
             </div>
@@ -41,11 +45,10 @@ export const UserProfile = () => {
                     <h1 className="text-xl">{user?.username}</h1>
                 </div>
 
-                {/* Show this follow button when other one is NOT in view. */}
+                {/* Show this follow button when other one goes out of view. */}
                 <FollowButton
                     className="w-28"
                     isShown={!inView}
-                    userId={user.id}
                     isFollowing={user.isFollowing}
                     username={user.username}
                 />
@@ -53,31 +56,45 @@ export const UserProfile = () => {
 
             {/* User profile */}
             <div className="relative flex flex-col w-full gap-2 ">
-                <div className="relative h-[180px] w-full bg-slate-400"></div>
-
-                <div className="relative flex justify-end  px-4">
-                    <span className="absolute bottom-0 left-6 flex h-24 w-24 shrink-0 overflow-hidden rounded-full">
+                {/* background */}
+                <div className="aspect-[3/1] sm:min-h-[200px]">
+                    {user.backgroundImage ? (
                         <img
-                            src={user.avatar.url}
-                            alt={user.username}
+                            src={user.backgroundImage.url}
+                            className={`w-full object-cover h-full `}
                             referrerPolicy="no-referrer"
-                            className="aspect-square h-full w-full"
                         />
-                    </span>
+                    ) : (
+                        <div className="flex  h-full w-full bg-gray-300"></div>
+                    )}
+                </div>
 
-                    <div>
+                <div className="relative flex justify-end  px-6">
+                    <Image
+                        src={user.avatar.url}
+                        alt={user.username}
+                        className="aspect-square p-[2px] bg-background absolute bottom-0 left-6  h-24 w-24"
+                        rounded={true}
+                    />
+                    {/* Current user */}
+                    {firebaseUser?.uid != user.id ? (
                         <FollowButton
                             className="w-28"
                             isShown={inView}
                             ref={headerRef}
-                            userId={user.id}
                             username={user.username}
                             isFollowing={user.isFollowing}
                         />
-                    </div>
+                    ) : (
+                        <EditProfileModal>
+                            <Button variant="outline" className="rounded-full">
+                                Edit profile
+                            </Button>
+                        </EditProfileModal>
+                    )}
                 </div>
 
-                <div className="flex flex-col px-3 gap-2">
+                <div className="flex flex-col px-6 gap-2 pb-3">
                     <div className="flex flex-col">
                         <span className="text-2xl font-bold">
                             {user.displayName}
@@ -86,12 +103,8 @@ export const UserProfile = () => {
                             @{user.username}
                         </span>
                     </div>
-                    <p>
-                        Stay moist http://twitch.tv/moistcr1tikal/ owner of
-                        @moistesports
-                    </p>
-
                     {user.bio && <p>{user.bio}</p>}
+
                     <div className="flex flex-col">
                         <span className="flex items-center gap-1 text-md text-gray-500">
                             {/* Add Z at end of string to indicate date is in UTC. */}
@@ -101,6 +114,12 @@ export const UserProfile = () => {
                                 "'Joined' MMM yyyy"
                             )}
                         </span>
+                        {user.location && (
+                            <span className="flex items-center gap-1 text-md text-gray-500">
+                                <MapPin size={16} />
+                                {user.location}
+                            </span>
+                        )}
                     </div>
 
                     <div className="flex text-sm gap-3">
