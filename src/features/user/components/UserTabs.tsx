@@ -5,6 +5,8 @@ import UserPostsTab from './UserPostsTab'
 import UserRepliesTab from './UserRepliesTab'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { capitalize } from '@/lib/utils'
+import UserMediasTab from './UserMediasTab'
+import UserLikesTab from './UserLikesTab'
 const USER_TAB_NAMES = ['posts', 'replies', 'media', 'likes']
 type Props = {
     username: string
@@ -57,6 +59,12 @@ function UserTabs({ username }: Props) {
                 </TabsContent>
                 <TabsContent value={USER_TAB_NAMES[1]} className="m-0">
                     <UserRepliesTab username={username} />
+                </TabsContent>
+                <TabsContent value={USER_TAB_NAMES[2]} className="m-0">
+                    <UserMediasTab username={username} />
+                </TabsContent>
+                <TabsContent value={USER_TAB_NAMES[3]} className="m-0">
+                    <UserLikesTab username={username} />
                 </TabsContent>
             </Tabs>
         </div>
