@@ -1,17 +1,49 @@
 import { Separator } from '@/components/ui/separator'
-import { useAuth } from '@/features/auth/context/AuthContext'
+import { useGetFollowedUsersPostsInfinite } from '@/features/post/api/getFollowedUsersPosts'
 import PostForm from '@/features/post/components/PostForm'
 import { doSignOut } from '@/firebase/auth'
+import { useInView } from 'react-intersection-observer'
+import { useEffect } from 'react'
+import { Spinner } from '@/components/Spinner'
+import PostList from '@/features/post/components/PostList'
 
 export const HomePage = () => {
-    const { firebaseUser: user } = useAuth()
-    console.log('user: ', user)
+    const query = useGetFollowedUsersPostsInfinite({})
+    const { ref, inView } = useInView()
+    useEffect(() => {
+        if (inView && query.hasNextPage && !query.isFetchingNextPage) {
+            query.fetchNextPage()
+        }
+    }, [inView, query])
+
+    if (query.isLoading) {
+        return (
+            <div className="flex items-center w-full justify-center">
+                <Spinner />
+            </div>
+        )
+    }
+
     return (
-        <div className=" pt-4 flex flex-col gap-3">
-            {/* TODO: complete homepage, and postform */}
+        <div className=" pt-4 flex flex-col">
             <PostForm />
             <Separator />
             <button onClick={() => doSignOut()}>Sign out</button>
+
+            <div>
+                {query.data?.pages.map((page) => (
+                    <PostList key={page.pageNumber} posts={page.items} />
+                ))}
+            </div>
+
+            {query.hasNextPage && (
+                <div
+                    ref={ref}
+                    className="min-h-[1px] flex items-center justify-center bg-transparent"
+                >
+                    {query.isFetchingNextPage && <Spinner />}
+                </div>
+            )}
         </div>
     )
 }
