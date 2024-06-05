@@ -27,25 +27,12 @@ namespace Application.UnitTests.Commands
             _dbContext = Substitute.For<IAppDbContext>();
             _currentUser = Substitute.For<ICurrentUser>();
             _testUser = user;
-            // Create a test user and a List<User> that contains the test user
             var data = new List<User> { user };
-
-            // Convert the List<User> to a Queryable that can be setup for NSubstitute
             var mockUsers = data.AsQueryable().BuildMockDbSet();
-
-            // Set up the mock DbContext to return the Mock<DbSet<User>> when the Users property is accessed
             _dbContext.Users.Returns(mockUsers);
-
-            // Create a List<Follow> for the Follows DbSet
             var followData = new List<Follow>();
-
-            // Convert the List<Follow> to a Queryable that can be setup for NSubstitute
             var mockFollows = followData.AsQueryable().BuildMockDbSet();
-
-            // Set up the mock DbContext to return the Mock<DbSet<Follow>> when the Follows property is accessed
             _dbContext.Follows.Returns(mockFollows);
-
-            // Set up the mock ICurrentUser to return a specific user ID
             _currentUserId = currentUserId;
             _currentUser.Id.Returns(_currentUserId);
 
@@ -56,29 +43,14 @@ namespace Application.UnitTests.Commands
             _dbContext = Substitute.For<IAppDbContext>();
             _currentUser = Substitute.For<ICurrentUser>();
             _testUser = user;
-
-            // Create a test user and a List<User> that contains the test user
             var data = new List<User> { user };
-
-            // Convert the List<User> to a Queryable that can be setup for NSubstitute
             var mockUsers = data.AsQueryable().BuildMockDbSet();
-
-            // Set up the mock DbContext to return the Mock<DbSet<User>> when the Users property is accessed
             _dbContext.Users.Returns(mockUsers);
-
-            // Create a List<Follow> for the Follows DbSet
             var followData = new List<Follow>() { follow };
-
-            // Convert the List<Follow> to a Queryable that can be setup for NSubstitute
             var mockFollows = followData.AsQueryable().BuildMockDbSet();
-
-            // Set up the mock DbContext to return the Mock<DbSet<Follow>> when the Follows property is accessed
             _dbContext.Follows.Returns(mockFollows);
-
-            // Set up the mock ICurrentUser to return a specific user ID
             _currentUserId = currentUserId;
             _currentUser.Id.Returns(_currentUserId);
-
             _handler = new CreateFollowCommandHandler(_dbContext, _currentUser);
         }
 
