@@ -1,10 +1,22 @@
 import { usePostModal } from '@/components/context/PostModalContext'
 import { Media } from '@/types'
+import { motion } from 'framer-motion'
 import { ImagesIcon } from 'lucide-react'
 
 type Props = {
     postId: string
     images: Media[]
+}
+
+const variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.5,
+        },
+    },
 }
 
 function PostMediasItem({ images, postId }: Props) {
@@ -19,7 +31,10 @@ function PostMediasItem({ images, postId }: Props) {
     }
 
     return (
-        <button
+        <motion.button
+            variants={variants}
+            initial="hidden"
+            animate="show"
             className="relative overflow-hidden aspect-square"
             onClick={() => {
                 handleImageClick(0)
@@ -37,7 +52,7 @@ function PostMediasItem({ images, postId }: Props) {
                     className="absolute bottom-0 right-0 text-background-contrast p-1 bg-background rounded-tl-md"
                 />
             )}
-        </button>
+        </motion.button>
     )
 }
 

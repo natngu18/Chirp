@@ -6,6 +6,7 @@ import Image from '@/features/image/components/Image'
 import { useAuth } from '@/features/auth/context/AuthContext'
 
 type Props = { username: string }
+
 function UserHoverCardContent({ username }: Props) {
     const { data: user, isLoading } = useGetUserByUsername(username)
     const { firebaseUser } = useAuth()
@@ -24,6 +25,7 @@ function UserHoverCardContent({ username }: Props) {
                         src={user.avatar.url}
                         alt={user.username}
                         rounded={true}
+                        disableAnimation={true}
                     />
                 </Link>
                 {firebaseUser?.uid !== user.id && (

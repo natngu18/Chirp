@@ -12,7 +12,7 @@ function PostModal() {
         <Dialog modal={true} open={isOpen} onOpenChange={() => toggle()}>
             <DialogContent
                 className="flex min-h-full gap-0 border-0
-    data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-0 data-[state=open]:zoom-in-0 data-[state=closed]:slide-out-to-left-0 data-[state=closed]:slide-out-to-top-[0%] data-[state=open]:slide-in-from-left-0 data-[state=open]:slide-in-from-top-[0%]
+    data-[state=open]:animate-none data-[state=closed]:animate-none data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-0 data-[state=open]:zoom-in-0 data-[state=closed]:slide-out-to-left-0 data-[state=closed]:slide-out-to-top-[0%] data-[state=open]:slide-in-from-left-0 data-[state=open]:slide-in-from-top-[0%]
     pointer-events-auto hover:cursor-auto max-h-screen left-0 bg-transparent p-0 rounded-none sm:rounded-none min-w-full top-0  translate-x-0 translate-y-0"
             >
                 {/* ensures postmodalProps is defined (it should be anyways when isOpen is true) */}

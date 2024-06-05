@@ -1,15 +1,35 @@
 import { cn } from '@/lib/utils'
+import { motion } from 'framer-motion'
 
+const variants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            duration: 0.5,
+        },
+    },
+}
 type Props = {
     src: string
     alt?: string
     rounded?: boolean
     className?: string
+    disableAnimation?: boolean
 }
 
-function Image({ src, alt, rounded = false, className }: Props) {
+function Image({
+    src,
+    alt,
+    rounded = false,
+    className,
+    disableAnimation = false,
+}: Props) {
     return (
-        <div
+        <motion.div
+            variants={disableAnimation ? {} : variants}
+            initial={disableAnimation ? {} : 'hidden'}
+            animate={disableAnimation ? {} : 'show'}
             className={cn(
                 `overflow-hidden ${rounded ? 'rounded-full' : ''}`,
                 className
@@ -22,7 +42,7 @@ function Image({ src, alt, rounded = false, className }: Props) {
                     rounded ? 'rounded-full' : ''
                 }`}
             />
-        </div>
+        </motion.div>
     )
 }
 

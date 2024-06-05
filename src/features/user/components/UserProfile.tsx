@@ -10,7 +10,7 @@ import { Spinner } from '@/components/Spinner'
 import UserTabs from './UserTabs'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { Button } from '@/components/ui/button'
-import EditProfileModal from './EditProfileModalTrigger'
+import EditProfileModal from './EditProfileModal'
 import Image from '../../image/components/Image'
 
 export const UserProfile = () => {
@@ -57,17 +57,16 @@ export const UserProfile = () => {
             {/* User profile */}
             <div className="relative flex flex-col w-full gap-2 ">
                 {/* background */}
-                <div className="aspect-[3/1] sm:min-h-[200px]">
-                    {user.backgroundImage ? (
-                        <img
-                            src={user.backgroundImage.url}
-                            className={`w-full object-cover h-full `}
-                            referrerPolicy="no-referrer"
-                        />
-                    ) : (
-                        <div className="flex  h-full w-full bg-gray-300"></div>
-                    )}
-                </div>
+
+                {user.backgroundImage ? (
+                    <Image
+                        src={user.backgroundImage.url}
+                        className="aspect-3/1 sm:min-h-[200px]"
+                        rounded={false}
+                    />
+                ) : (
+                    <div className="flex aspect-[3/1] sm:min-h-[200px]  h-full w-full bg-gray-300"></div>
+                )}
 
                 <div className="relative flex justify-end  px-6">
                     <Image

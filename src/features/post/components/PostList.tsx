@@ -1,23 +1,35 @@
-// Should be reusable
-// This should not do the fetching...
-// it can render following posts, search results, user posts, etc.
-import React from 'react'
 import { PostBriefResponse } from '../types'
 import PostItem from './PostItem'
-
+import { motion } from 'framer-motion'
 type Props = {
     posts: PostBriefResponse[]
 }
 
 function PostList({ posts }: Props) {
+    const variants = {
+        hidden: { opacity: 0, y: 10 },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+            },
+        },
+    }
     return (
-        <div>
+        <>
             {posts.map((post) => (
-                <React.Fragment key={post.id}>
+                <motion.div
+                    key={post.id}
+                    variants={variants}
+                    initial="hidden"
+                    animate="show"
+                    exit="exit"
+                >
                     <PostItem post={post} separator={true} />
-                </React.Fragment>
+                </motion.div>
             ))}
-        </div>
+        </>
     )
 }
 
