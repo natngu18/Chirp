@@ -1,4 +1,4 @@
-﻿using Chirp.Application.Queries.Posts.GetPostSearchSuggestions;
+﻿using Chirp.Application.Queries.Search.GetSearchSuggestions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

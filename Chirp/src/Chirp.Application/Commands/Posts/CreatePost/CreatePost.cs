@@ -40,13 +40,17 @@ namespace Chirp.Application.Commands.Posts.CreatePost
             {
                 throw new NotFoundException(nameof(User), _currentUser.Id ?? "No ID in token");
             }
+
             Post? parentPost = null;
+            // Check if specified parent post exists
             if (request.ParentPostId is not null)
             {
+                //parentPost = await _dbContext.Posts
+                //    .Where(p => p.Id == request.ParentPostId)
+                //    .FirstOrDefaultAsync(cancellationToken);
                 parentPost = await _dbContext.Posts
-                    .Where(p => p.Id == request.ParentPostId)
-                    .FirstOrDefaultAsync(cancellationToken);
-                if (parentPost is null)
+                    .FirstOrDefaultAsync(p => p.Id == request.ParentPostId, cancellationToken);
+                if (parentPost == null)
                 {
                     throw new NotFoundException(nameof(Post), request.ParentPostId);
                 }

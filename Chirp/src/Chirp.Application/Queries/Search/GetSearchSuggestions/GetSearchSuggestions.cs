@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Nest;
 
-namespace Chirp.Application.Queries.Posts.GetPostSearchSuggestions
+namespace Chirp.Application.Queries.Search.GetSearchSuggestions
 {
     // This only suggests users matching the search text currently
     public record GetSearchSuggestionsQuery : MediatR.IRequest<SearchSuggestionsResponse>
@@ -33,12 +33,24 @@ namespace Chirp.Application.Queries.Posts.GetPostSearchSuggestions
 
         public async Task<SearchSuggestionsResponse> Handle(GetSearchSuggestionsQuery request, CancellationToken cancellationToken)
         {
+            //var searchResponse = _elasticClient.Search<User>(s => s
+            //.Query(q => q
+            //    .Match(m => m
+            //        .Field(f => f.Username.Suffix("ngram"))
+            //        .Query(request.SearchText)
+            //    ))
+            //    .Size(request.UserSuggestionCount)
+            //);
             var searchResponse = _elasticClient.Search<User>(s => s
-            .Query(q => q
-                .Match(m => m
-                    .Field(f => f.Username.Suffix("ngram"))
-                    .Query(request.SearchText)
-                ))
+                .Query(q => q
+                    .MultiMatch(m => m
+                        .Fields(f => f
+                            .Field(ff => ff.Username.Suffix("ngram"))
+                            .Field(ff => ff.DisplayName.Suffix("ngram"))
+                        )
+                        .Query(request.SearchText)
+                    )
+                )
                 .Size(request.UserSuggestionCount)
             );
 

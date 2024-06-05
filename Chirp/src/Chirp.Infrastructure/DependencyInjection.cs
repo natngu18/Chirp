@@ -13,6 +13,7 @@ namespace Chirp.Infrastructure
 {
     public static class DependencyInjection
     {
+
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
 
@@ -20,8 +21,7 @@ namespace Chirp.Infrastructure
             {
                 Credential = GoogleCredential.FromFile("C:\\Users\\srvth\\OneDrive\\Desktop\\firebase\\chirps-a4ee9-firebase-adminsdk-ulgw4-fbe4f57fd9.json")
             });
-
-            //services.AddHostedService<KafkaConsumerService>();
+            services.AddHostedService<KafkaConsumerService>();
             services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
             services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddDbContext<AppDbContext>(options =>

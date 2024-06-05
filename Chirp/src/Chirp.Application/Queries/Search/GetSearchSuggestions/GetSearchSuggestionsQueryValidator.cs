@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Chirp.Application.Queries.Posts.GetPostSearchSuggestions
+namespace Chirp.Application.Queries.Search.GetSearchSuggestions
 {
 
     public class GetSearchSuggestionsQueryValidator : AbstractValidator<GetSearchSuggestionsQuery>

@@ -37,7 +37,8 @@ namespace Chirp.Infrastructure.Extensions
                     .Ignore(u => u.Posts)
                     .Ignore(u => u.Bio)
                     .Ignore(u => u.Location)
-                    .Ignore(u => u.DisplayName)
+                    .Ignore(u => u.Likes)
+                    //.Ignore(u => u.DisplayName)
                     .IdProperty(u => u.Id)
                     .IndexName("users")
                 );
@@ -78,6 +79,15 @@ namespace Chirp.Infrastructure.Extensions
                     .Properties(ps => ps
                         .Text(t => t
                             .Name(n => n.Username)
+                            .Fields(f => f
+                                .Text(te => te
+                                    .Name("ngram")
+                                    .Analyzer("user_analyzer")
+                                )
+                            )
+                        )
+                        .Text(t => t
+                            .Name(n => n.DisplayName)
                             .Fields(f => f
                                 .Text(te => te
                                     .Name("ngram")

@@ -76,7 +76,7 @@ namespace Chirp.Application.Queries.Posts.GetPostsBySearch
 
             var currentUserId = _currentUser.Id;
 
-            //// Extract the unique post IDs from the search results
+            //// Extract the  post IDs from the search results
             var postIds = result.Documents.Select(p => p.Id).Distinct().ToList();
 
             // Query to get the posts with their associated media and likes
@@ -97,6 +97,7 @@ namespace Chirp.Application.Queries.Posts.GetPostsBySearch
                 })
                 .ToDictionaryAsync(p => p.Id, cancellationToken);
 
+            // Combine highlighted text from elasticsearch results with additional post data from primary db
             var postItems = result.Hits.Select(hit =>
             {
                 var post = posts[hit.Source.Id];

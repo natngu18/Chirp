@@ -23,10 +23,8 @@ builder.Services.AddControllers()
     {
         opt.JsonSerializerOptions.WriteIndented = true;
         // Enum as string
-        // TODO: Test it
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     });
-
 
 builder.Services.AddCors(opt =>
 {

@@ -44,7 +44,7 @@ namespace Chirp.Application.Queries.Posts.GetFollowedUsersPosts
                     LikeCount = p.Likes.Count,
                     IsLiked = p.Likes.Any(l => l.UserId == _currentUser.Id),
                     ChildCount = p.ChildPosts.Count,
-                    ParentPostAuthorUsername = p.ParentPost.Author.Username,
+                    ParentPostAuthorUsername = p.ParentPost != null ? p.ParentPost.Author.Username : null,
                 })
                 .PaginatedListAsync(request.PageNumber, request.PageSize);
 

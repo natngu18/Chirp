@@ -58,9 +58,9 @@ namespace Chirp.Application.Commands.Users.CreateUser
             }
             var avatar = userRecord.PhotoUrl != null
                     // Profile picture from Firebase
-                    ? new Media { Url = userRecord.PhotoUrl, UserId = request.Id, IsAvatar = true }
+                    ? new Media { Url = userRecord.PhotoUrl, UserId = request.Id, IsAvatar = true, Type = Domain.Enums.MediaType.Image }
                     // Default profile picture
-                    : new Media { Url = _defaultAvatarUrl, UserId = request.Id, IsAvatar = true };
+                    : new Media { Url = _defaultAvatarUrl, UserId = request.Id, IsAvatar = true, Type = Domain.Enums.MediaType.Image };
             var user = new User
             {
                 Id = request.Id, // ID from Firebase

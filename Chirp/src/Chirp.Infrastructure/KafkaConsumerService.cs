@@ -12,6 +12,7 @@ namespace Chirp.Infrastructure
     {
         private readonly IElasticClient _elasticClient;
         private readonly IConfiguration _configuration;
+
         public KafkaConsumerService(IElasticClient elasticClient, IConfiguration configuration)
         {
             _elasticClient = elasticClient;
@@ -42,10 +43,11 @@ namespace Chirp.Infrastructure
                     consumerBuilder.Subscribe(new List<string> { "postgres.public.Posts", "postgres.public.Users" });
                     while (!stoppingToken.IsCancellationRequested)
                     {
-                        var consumerData = consumerBuilder.Consume(TimeSpan.FromSeconds(3));
+                        //var consumerData = consumerBuilder.Consume();
+                        var consumerData = consumerBuilder.Consume(TimeSpan.FromSeconds(1));
                         if (consumerData != null && consumerData?.Message != null)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Consumed message '{consumerData.Message.Value}' at: '{consumerData.TopicPartitionOffset}'");
+                            //System.Diagnostics.Debug.WriteLine($"Consumed message '{consumerData.Message.Value}' at: '{consumerData.TopicPartitionOffset}'");
                             var debeziumEvent = JsonConvert.DeserializeObject<DebeziumPayload>(consumerData.Message.Value);
 
                             if (debeziumEvent == null)
