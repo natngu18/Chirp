@@ -27,5 +27,6 @@ export const postQueryKeys = {
         [...postQueryKeys.all, 'medias', username] as const,
     userLikedPosts: (username: string) =>
         [...postQueryKeys.lists(), 'liked', username] as const,
+    followedUsersPosts: () => [...postQueryKeys.lists(), 'followed'] as const,
     // detail: (id: string) => [...postQueryKeys.all, 'detail', id] as const,
 }

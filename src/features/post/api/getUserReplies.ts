@@ -6,7 +6,7 @@ import { useAuth } from '@/features/auth/context/AuthContext'
 import { postQueryKeys } from '../queries'
 export const getUserReplies = async ({
     pageNumber = 1,
-    pageSize = 2,
+    pageSize = 10,
     username,
     token,
 }: PaginationParams & { username: string; token: string }): Promise<

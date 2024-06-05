@@ -3,11 +3,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CreatePostCommand } from '../types'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { postQueryKeys } from '../queries'
+import { useToast } from '@/components/ui/use-toast'
 
 export const createPost = async (
     formData: FormData,
     token: string,
-    postId?: string
+    postId?: string // If postId is provided, it means we are creating a comment
 ): Promise<string> => {
     let route = `/posts`
     if (postId) {
@@ -35,15 +36,31 @@ function createFormData(request: CreatePostCommand): FormData {
 }
 
 export const useCreatePost = (postId?: string) => {
-    const { token } = useAuth()
+    const { token, appUser } = useAuth()
+    const { toast } = useToast()
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (request: CreatePostCommand) =>
             createPost(createFormData(request), token, postId),
-        onSuccess: () => {
+        onSuccess: async () => {
             // Invalidate all post lists queries
-            queryClient.invalidateQueries({ queryKey: postQueryKeys.lists() })
+            await queryClient.invalidateQueries({
+                queryKey: postQueryKeys.lists(),
+                exact: false,
+                refetchType: 'all', // by default invalidateQueries() only forces refetch for active queries
+            })
+            if (appUser && appUser.username) {
+                queryClient.invalidateQueries({
+                    queryKey: postQueryKeys.userPostMedias(appUser.username),
+                    refetchType: 'inactive', // by default invalidateQueries() only forces refetch for active queries
+                })
+            }
         },
-        onError: (error) => {},
+        onError: () => {
+            toast({
+                title: 'An error occurred',
+                description: 'Failed to create post',
+            })
+        },
     })
 }

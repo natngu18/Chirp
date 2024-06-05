@@ -36,13 +36,13 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
                 )
             */}
             <CollapsibleSidebar navItems={userNavItems} />
-            <div className="hover-animation flex min-h-screen w-full max-w-xl flex-col border-x-0 border-light-border  dark:border-dark-border xs:border-x">
+            <div className="min-h-screen w-full max-w-xl  border-x-0 border-r border-light-border  dark:border-dark-border xs:border-x">
                 {/* <Outlet /> */}
                 {children}
                 <PostModal />
             </div>
 
-            <div className="border-l w-96 flex-col gap-4 px-4 py-3 pt-1 hidden lg:flex">
+            <div className="w-96 flex-col gap-4 px-4 py-3 pt-1 hidden lg:flex">
                 <Searchbar />
                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint
                 dolorem neque quis fuga in deserunt omnis accusantium? Quod
