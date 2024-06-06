@@ -1,7 +1,6 @@
 import { Separator } from '@/components/ui/separator'
 import { useGetFollowedUsersPostsInfinite } from '@/features/post/api/getFollowedUsersPosts'
 import PostForm from '@/features/post/components/PostForm'
-import { doSignOut } from '@/firebase/auth'
 import { useInView } from 'react-intersection-observer'
 import { useEffect } from 'react'
 import { Spinner } from '@/components/Spinner'
@@ -28,7 +27,6 @@ export const HomePage = () => {
         <div className=" pt-4 flex flex-col">
             <PostForm />
             <Separator />
-            <button onClick={() => doSignOut()}>Sign out</button>
 
             <div>
                 {query.data?.pages.map((page) => (
