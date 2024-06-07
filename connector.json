@@ -7,7 +7,7 @@
     "database.hostname": "postgres",
     "database.password": "postgres",
     "database.port": "5432",
-    "database.server.name": "postgres",
+    "database.server.name": "postgres_posts",
     "database.user": "postgres",
     "name": "posts-db-connector",
     "plugin.name": "pgoutput",
@@ -19,7 +19,7 @@
     "topic.creation.default.retention.ms": "604800000",
     "topic.creation.enable": "true",
     "topic.prefix": "postgres",
-    "slot.name":  "debezium_posts_slot"
+    "slot.name": "debezium_posts_slot"
   },
   "name": "posts-db-connector"
 }
