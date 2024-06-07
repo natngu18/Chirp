@@ -28,3 +28,7 @@ export type UpdateUserCommand = {
     backgroundImage?: File
     deleteBackgroundImage: boolean
 }
+
+export type GetTopFollowedUsersQuery = {
+    userCount: number
+}

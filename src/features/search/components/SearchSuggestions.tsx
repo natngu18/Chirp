@@ -3,7 +3,7 @@ import useDebounce from '@/hooks/useDebounce'
 import { useGetSearchSuggestions } from '../api/getSearchSuggestions'
 import { CommandGroup, CommandItem } from '@/components/ui/command'
 import UserSearchSuggestionItem from '@/features/user/components/UserSearchSuggestionItem'
-import { createSearchParams, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/Spinner'
 type Props = {
     suggestionParams: GetSearchSuggestionsQuery
@@ -27,17 +27,22 @@ function SearchSuggestions({ suggestionParams, onSuggestionSelect }: Props) {
             {suggestionParams.searchText && getSearchSuggestionsQuery.data && (
                 <CommandItem
                     className="text-md hover:cursor-pointer"
+                    asChild
                     onSelect={() => {
-                        navigate({
-                            pathname: '/search',
-                            search: createSearchParams({
-                                q: suggestionParams.searchText,
-                            }).toString(),
-                        })
+                        // navigate({
+                        //     pathname: '/search',
+                        //     search: createSearchParams({
+                        //         q: suggestionParams.searchText,
+                        //     }).toString(),
+                        // })
                         if (onSuggestionSelect) onSuggestionSelect()
                     }}
                 >
-                    {`Search for "${suggestionParams.searchText}"`}
+                    <Link
+                        to={`/search?${createSearchParams({
+                            q: suggestionParams.searchText,
+                        }).toString()}`}
+                    >{`Search for "${suggestionParams.searchText}"`}</Link>
                 </CommandItem>
             )}
 
@@ -47,13 +52,16 @@ function SearchSuggestions({ suggestionParams, onSuggestionSelect }: Props) {
                     <CommandItem
                         className="hover:cursor-pointer"
                         key={user.id}
+                        asChild
                         value={user.username}
                         onSelect={(selectedUsername) => {
-                            navigate(`/profile/${selectedUsername}`)
+                            // navigate(`/profile/${selectedUsername}`)
                             if (onSuggestionSelect) onSuggestionSelect()
                         }}
                     >
-                        <UserSearchSuggestionItem user={user} />
+                        <Link to={`/profile/${user.username}`}>
+                            <UserSearchSuggestionItem user={user} />
+                        </Link>
                     </CommandItem>
                 ))}
         </CommandGroup>

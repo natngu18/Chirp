@@ -1,8 +1,9 @@
 import CollapsibleSidebar from '@/components/CollapsibleSidebar'
 import { NavItem } from '@/components/types'
 import { useAuth } from '@/features/auth/context/AuthContext'
-import PostModal from '@/features/image/components/PostModal'
+import PostDetailsModal from '@/features/image/components/PostDetailsModal'
 import { Searchbar } from '@/features/search/components/Searchbar'
+import WhoToFollowCard from '@/features/user/components/WhoToFollowCard'
 import { CircleUserRoundIcon, LayoutDashboard } from 'lucide-react'
 
 export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
@@ -37,13 +38,15 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
             */}
             <CollapsibleSidebar navItems={userNavItems} />
             <div className="min-h-screen w-full max-w-xl  border-x-0 border-r border-light-border  dark:border-dark-border xs:border-x">
-                {/* <Outlet /> */}
                 {children}
-                <PostModal />
+                {/* Modal to view details for a single post, when image is clicked. */}
+                <PostDetailsModal />
+                <div className="h-[12300px]">x</div>
             </div>
 
             <div className="w-96 flex-col gap-4 px-4 py-3 pt-1 hidden lg:flex">
                 <Searchbar />
+                <WhoToFollowCard />
                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint
                 dolorem neque quis fuga in deserunt omnis accusantium? Quod
                 deserunt quaerat deleniti magnam suscipit quas nam. Id,

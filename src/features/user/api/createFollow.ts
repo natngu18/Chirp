@@ -36,6 +36,42 @@ export const useCreateFollow = (username: string) => {
                 })
             }
 
+            //TODO: update searchsuggestions + top followed users...
+            // await queryClient.cancelQueries({
+            //     queryKey: postQueryKeys.lists(),
+            // })
+            // // Update query cache for all post lists (partial query key match)
+            // queryClient.setQueriesData(
+            //     { queryKey: postQueryKeys.lists(), exact: false },
+            //     (
+            //         oldData:
+            //             | InfiniteData<PaginatedList<PostBriefResponse>>
+            //             | undefined
+            //     ) => {
+            //         // If oldData is undefined, return undefined
+            //         if (!oldData) {
+            //             return undefined
+            //         }
+            //         return {
+            //             ...oldData,
+            //             pages: oldData.pages.map((page) => ({
+            //                 ...page,
+            //                 items: page.items.map((post) =>
+            //                     post.id == Number(postId)
+            //                         ? {
+            //                               ...post,
+            //                               isLiked: action === 'like',
+            //                               likeCount:
+            //                                   post.likeCount +
+            //                                   (action === 'like' ? 1 : -1),
+            //                           }
+            //                         : post
+            //                 ),
+            //             })),
+            //         }
+            //     }
+            // )
+
             // Return a context with the previous user
             return { previousUser }
         },
