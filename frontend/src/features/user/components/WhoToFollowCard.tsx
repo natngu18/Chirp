@@ -1,31 +1,26 @@
 import { useGetTopFollowedUsers } from '../api/getTopFollowedUsers'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import UserWhoToFollowItem from './UserWhoToFollowItem'
+import { Spinner } from '@/components/Spinner'
 function WhoToFollowCard() {
     const query = useGetTopFollowedUsers({ userCount: 5 })
-    console.log(query.data)
     return (
         <Card className="">
-            <CardHeader className="p-0">
-                <CardTitle>Card Title</CardTitle>
-                <CardDescription>Card Description</CardDescription>
+            <CardHeader className="px-3 py-2">
+                <CardTitle className="text-2xl font-semibold">
+                    Who to follow
+                </CardTitle>
             </CardHeader>
+
+            {query.isLoading && (
+                <div className="flex items-center justify-center h-32">
+                    <Spinner />
+                </div>
+            )}
+
             {query.data?.map((user) => (
                 <UserWhoToFollowItem key={user.id} user={user} />
             ))}
-            <CardContent className="p-0">
-                <p>Card Content</p>
-            </CardContent>
-            <CardFooter className="p-0">
-                <p>Card Footer</p>
-            </CardFooter>
         </Card>
     )
 }

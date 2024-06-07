@@ -1,8 +1,5 @@
 import { motion } from 'framer-motion'
 import { UserBriefResponse } from '../types'
-import FollowButton from './FollowButton'
-import { useAuth } from '@/features/auth/context/AuthContext'
-import { Link, useNavigate } from 'react-router-dom'
 import Image from '@/features/image/components/Image'
 
 type Props = {
@@ -19,8 +16,6 @@ const variants = {
     },
 }
 function UserSearchSuggestionItem({ user }: Props) {
-    const { firebaseUser } = useAuth()
-    const navigate = useNavigate()
     return (
         // fake outer link for card body
         <motion.div
@@ -45,7 +40,9 @@ function UserSearchSuggestionItem({ user }: Props) {
                     <div className="text-gray-500 overflow-hidden text-overflow ellipsis whitespace-nowrap">
                         @{user.username}
                     </div>
-                    {user.isFollowing && <div>Followed</div>}
+                    {user.isFollowing && (
+                        <div className="text-gray-500 text-xs">Followed</div>
+                    )}
                 </div>
             </div>
         </motion.div>

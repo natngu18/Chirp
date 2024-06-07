@@ -5,6 +5,7 @@ import { useAuth } from '@/features/auth/context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import Image from '@/features/image/components/Image'
 import { Spinner } from '@/components/Spinner'
+import UserHoverCardTrigger from './UserHoverCardTrigger'
 
 type Props = { user: UserBriefResponse }
 const variants = {
@@ -34,17 +35,19 @@ function UserWhoToFollowItem({ user }: Props) {
             role="link"
         >
             <div className="flex gap-3 items-center">
-                <Link
-                    to={`/profile/${user.username}`}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <Image
-                        className="h-10 w-10 clickable-object"
-                        src={user.avatar.url}
-                        alt={user.username}
-                        rounded={true}
-                    />
-                </Link>
+                <UserHoverCardTrigger username={user.username}>
+                    <Link
+                        to={`/profile/${user.username}`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <Image
+                            className="h-10 w-10 clickable-object"
+                            src={user.avatar.url}
+                            alt={user.username}
+                            rounded={true}
+                        />
+                    </Link>
+                </UserHoverCardTrigger>
 
                 <div className="">
                     <Link
@@ -76,6 +79,7 @@ function UserWhoToFollowItem({ user }: Props) {
                     isShown={firebaseUser?.uid != user.id}
                     username={user.username}
                     isFollowing={user.isFollowing}
+                    onClick={(e) => e.stopPropagation()}
                 />
             )}
         </motion.div>

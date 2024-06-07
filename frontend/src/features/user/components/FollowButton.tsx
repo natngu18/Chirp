@@ -1,9 +1,8 @@
 import React from 'react'
 import ButtonWithLoading from '@/components/ButtonWithLoading'
 import { ButtonHTMLAttributes } from 'react'
-import { useCreateFollow } from '../api/createFollow'
 import { cn } from '@/lib/utils'
-import { useDeleteFollow } from '../api/deleteFollow'
+import { useFollow } from '../api/createAndDeleteFollow'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     isShown?: boolean
@@ -12,22 +11,25 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const FollowButton = React.forwardRef<HTMLButtonElement, Props>(
-    ({ isShown = true, isFollowing, username, className, ...props }, ref) => {
-        const { mutate: follow, isPending: isFollowPending } =
-            useCreateFollow(username)
-        const { mutate: unfollow, isPending: isUnfollowPending } =
-            useDeleteFollow(username)
+    (
+        { isShown = true, isFollowing, username, className, onClick, ...props },
+        ref
+    ) => {
+        const { mutate, isPending } = useFollow(username)
 
-        const handleButtonClick = () => {
-            // if the user is already following, then unfollow
-            // etc...
+        const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
             if (isFollowing) {
                 // unfollow
-                unfollow()
+                mutate('unfollow')
             } else if (!isFollowing) {
                 // follow
 
-                follow()
+                mutate('follow')
+            }
+
+            // Call the original onClick if it was provided
+            if (onClick) {
+                onClick(e)
             }
         }
         return (
@@ -40,8 +42,8 @@ const FollowButton = React.forwardRef<HTMLButtonElement, Props>(
                     }`,
                     className
                 )}
-                onClick={() => handleButtonClick()}
-                isLoading={isFollowPending || isUnfollowPending}
+                onClick={(e) => handleButtonClick(e)}
+                isLoading={isPending}
                 {...props}
                 ref={ref}
             >
