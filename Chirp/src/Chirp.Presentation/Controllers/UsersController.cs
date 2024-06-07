@@ -6,6 +6,7 @@ using Chirp.Application.Queries.Medias.GetUserPostMedias;
 using Chirp.Application.Queries.Posts.GetUserLikedPosts;
 using Chirp.Application.Queries.Posts.GetUserOriginalPosts;
 using Chirp.Application.Queries.Posts.GetUserReplies;
+using Chirp.Application.Queries.Users.GetTopFollowedUsers;
 using Chirp.Application.Queries.Users.GetUserById;
 using Chirp.Application.Queries.Users.GetUserByUsername;
 using MediatR;
@@ -109,5 +110,12 @@ namespace Chirp.Presentation.Controllers
             return Ok(res);
         }
 
+        [HttpGet]
+        [Route("top-followed")]
+        public async Task<IActionResult> GetTopFollowedUsers([FromQuery] GetTopFollowedUsersQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
     }
 }

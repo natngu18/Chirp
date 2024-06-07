@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{86D5C4E9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chirp.Application.UnitTests", "Chirp\tests\Chirp.Application.UnitTests\Chirp.Application.UnitTests.csproj", "{899E5B44-1E95-45C6-A028-29F257D3E0D4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chirp.Application.IntegrationTests", "Chirp\tests\Chirp.Application.IntegrationTests\Chirp.Application.IntegrationTests.csproj", "{959DE4E2-315F-47CC-B971-42F74E52EBE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{899E5B44-1E95-45C6-A028-29F257D3E0D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{899E5B44-1E95-45C6-A028-29F257D3E0D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{899E5B44-1E95-45C6-A028-29F257D3E0D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{959DE4E2-315F-47CC-B971-42F74E52EBE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{959DE4E2-315F-47CC-B971-42F74E52EBE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{959DE4E2-315F-47CC-B971-42F74E52EBE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{959DE4E2-315F-47CC-B971-42F74E52EBE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{64B38B95-1254-46F0-8DE2-BAEB964D2F1C} = {03C1C584-8521-439E-B371-B8C935279B34}
 		{A242FD09-A2C9-483F-A62B-10BAF9F10916} = {03C1C584-8521-439E-B371-B8C935279B34}
 		{899E5B44-1E95-45C6-A028-29F257D3E0D4} = {86D5C4E9-E70B-4406-9E54-66F6D24F6FFB}
+		{959DE4E2-315F-47CC-B971-42F74E52EBE9} = {86D5C4E9-E70B-4406-9E54-66F6D24F6FFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A62682B-13F6-4B4E-B4C4-4C041E66F204}
