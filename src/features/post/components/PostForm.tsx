@@ -68,6 +68,7 @@ function PostForm({
         resolver: zodResolver(postSchema),
         defaultValues: {
             text: '',
+            images: undefined,
         },
     })
     const { mutate, isPending } = useCreatePost(parentPostId)

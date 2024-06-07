@@ -6,6 +6,8 @@ function SignInWithGoogleButton() {
     const handleGoogleSignIn = async () => {
         doSignInWithGoogle()
             .then((userCredential) => {
+                // Call API to create user in backend if it doesn't exist.
+                // api won't return error if user already exists, it just wont create it.
                 mutate({
                     email: userCredential.user.email!,
                     id: userCredential.user.uid,

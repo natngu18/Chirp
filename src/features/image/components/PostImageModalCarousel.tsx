@@ -2,13 +2,13 @@ import {
     Carousel,
     CarouselApi,
     CarouselContent,
-    CarouselItem,
     CarouselNext,
     CarouselPrevious,
 } from '@/components/ui/carousel'
 import { Media } from '@/types'
 import React from 'react'
 import AutoHeight from 'embla-carousel-auto-height'
+import Image from './Image'
 
 type Props = {
     medias: Media[]
@@ -63,18 +63,19 @@ function PostImageModalCarousel({ medias, initialIndex = 0 }: Props) {
                 className="w-full"
             >
                 <CarouselContent className="items-center h-fit">
-                    {medias.map((media, index) => (
-                        <CarouselItem key={index}>
-                            <img
-                                src={media.url}
-                                className="w-full h-full"
-                                loading="eager"
-                                referrerPolicy="no-referrer"
-                                onLoad={() => {
-                                    reinitCarousel()
-                                }}
-                            />
-                        </CarouselItem>
+                    {medias.map((media) => (
+                        // <CarouselItem key={index}>
+                        <Image
+                            key={media.url}
+                            src={media.url}
+                            className="min-w-0 shrink-0 grow-0 basis-full"
+                            loading="eager"
+                            referrerPolicy="no-referrer"
+                            onLoad={() => {
+                                reinitCarousel()
+                            }}
+                        />
+                        // </CarouselItem>
                     ))}
                 </CarouselContent>
                 {canScrollPrev && (

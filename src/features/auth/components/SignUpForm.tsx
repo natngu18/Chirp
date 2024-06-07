@@ -47,16 +47,18 @@ export function SignUpForm({ onSubmitAction }: Props) {
         setIsSigningUp(true)
         doCreateUserWithEmailAndPassword(values.email, values.password)
             .then((userCredential) => {
+                // Call API to create user in backend if it doesn't exist.
+                // api won't return error if user already exists, it just wont create it.
                 mutate({ email: values.email, id: userCredential.user.uid })
             })
-            .then(() => {
-                // Only call the action after the user is successfully created in API call
-                // (No other errors occurred, useful if used in a modal and action is to close the modal)
-                // so we can view the resulting errors without the modal closing
-                if (onSubmitAction) {
-                    onSubmitAction()
-                }
-            })
+            // .then(() => {
+            //     // Only call the action after the user is successfully created in API call
+            //     // (No other errors occurred, useful if used in a modal and action is to close the modal)
+            //     // so we can view the resulting errors without the modal closing
+            //     if (onSubmitAction) {
+            //         onSubmitAction()
+            //     }
+            // })
             .catch((error) => {
                 if (error instanceof FirebaseError) {
                     const errorMessage = generateFirebaseAuthErrorMessage(error)

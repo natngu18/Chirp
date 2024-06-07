@@ -14,5 +14,7 @@ export const useGetUserById = (userId: string, isEnabled: boolean = true) => {
         queryFn: () => getUserById(userId),
         queryKey: ['user', userId],
         enabled: !!userId && isEnabled,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
     })
 }

@@ -1,5 +1,5 @@
 import { Spinner } from '@/components/Spinner'
-import { PostModalProvider } from '@/components/context/PostModalContext'
+import { PostDetailsModalProvider } from '@/components/context/PostModalContext'
 import { AuthenticationGuard } from '@/features/auth/components/AuthenticationGuard'
 import PostDetails from '@/features/post/components/PostDetails'
 import { TwitterLayout } from '@/layout/TwitterLayout'
@@ -21,7 +21,7 @@ const { UserProfile } = lazyImport(
 const MainApp = () => {
     return (
         // Modal provider needs to be wrapped by RouterProvider, since it uses useLocation.
-        <PostModalProvider>
+        <PostDetailsModalProvider>
             <TwitterLayout>
                 <Suspense
                     fallback={
@@ -33,7 +33,7 @@ const MainApp = () => {
                     <Outlet />
                 </Suspense>
             </TwitterLayout>
-        </PostModalProvider>
+        </PostDetailsModalProvider>
     )
 }
 export const routesForAuthenticatedOnly = [

@@ -11,19 +11,20 @@ const variants = {
     },
 }
 type Props = {
-    src: string
-    alt?: string
+    // src: string
+    // alt?: string
     rounded?: boolean
     className?: string
     disableAnimation?: boolean
-}
+} & React.ImgHTMLAttributes<HTMLImageElement>
 
 function Image({
-    src,
-    alt,
+    // src,
+    // alt,
     rounded = false,
     className,
     disableAnimation = false,
+    ...imgProps
 }: Props) {
     return (
         <motion.div
@@ -36,11 +37,12 @@ function Image({
             )}
         >
             <img
-                src={src}
-                alt={alt}
+                // src={src}
+                // alt={alt}
                 className={`h-full w-full object-cover ${
                     rounded ? 'rounded-full' : ''
                 }`}
+                {...imgProps}
             />
         </motion.div>
     )

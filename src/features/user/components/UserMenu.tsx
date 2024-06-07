@@ -32,9 +32,7 @@ function UserMenu({ isSmallerThanXlScreen }: Props) {
                         <div className="flex gap-3 items-center">
                             <Image
                                 className="h-12 w-12 clickable-object"
-                                src={
-                                    'https://pbs.twimg.com/media/GPUpsseXoAMSEXO?format=png&name=360x360'
-                                }
+                                src={appUser.avatar.url}
                                 alt={appUser.username}
                                 rounded={true}
                             />

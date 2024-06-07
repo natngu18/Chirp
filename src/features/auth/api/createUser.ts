@@ -15,9 +15,6 @@ export const createUser = async (
 }
 
 export const useCreateUser = () => {
-    // const { toast } = useToast()
-    // const { user } = useAuth()
-    // console.log('token for use sign up: ', token)
     return useMutation({
         mutationFn: (request: CreateUserCommand) => createUser(request),
     })

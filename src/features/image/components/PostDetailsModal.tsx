@@ -1,12 +1,12 @@
-import { usePostModal } from '@/components/context/PostModalContext'
+import { usePostDetailsModal } from '@/components/context/PostModalContext'
 import { Dialog, DialogClose, DialogContent } from '@/components/ui/dialog'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import PostImageModalCarousel from './PostImageModalCarousel'
 import PostDetails from '@/features/post/components/PostDetails'
 import { X } from 'lucide-react'
 
-function PostModal() {
-    const { isOpen, toggle, postModalProps } = usePostModal()
+function PostDetailsModal() {
+    const { isOpen, toggle, postModalProps } = usePostDetailsModal()
     const isMobileScreen = useMediaQuery('(max-width: 640px)')
     return (
         <Dialog modal={true} open={isOpen} onOpenChange={() => toggle()}>
@@ -39,7 +39,7 @@ function PostModal() {
                     </div>
                 )}
                 {!isMobileScreen && isOpen && postModalProps && (
-                    <div className="border-l-[1px] overflow-y-scroll overflow-x-hidden bg-background w-1/2 ">
+                    <div className="border-l overflow-y-auto overflow-x-hidden bg-background w-1/2 ">
                         <PostDetails
                             propPostId={postModalProps!.postId}
                             // Don't need to display images for the post, since they are already displayed above.
@@ -52,4 +52,4 @@ function PostModal() {
     )
 }
 
-export default PostModal
+export default PostDetailsModal

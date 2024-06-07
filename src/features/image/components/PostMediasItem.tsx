@@ -1,4 +1,4 @@
-import { usePostModal } from '@/components/context/PostModalContext'
+import { usePostDetailsModal } from '@/components/context/PostModalContext'
 import { Media } from '@/types'
 import { motion } from 'framer-motion'
 import { ImagesIcon } from 'lucide-react'
@@ -20,7 +20,7 @@ const variants = {
 }
 
 function PostMediasItem({ images, postId }: Props) {
-    const { isOpen, toggle, setPostModalProps } = usePostModal()
+    const { isOpen, toggle, setPostModalProps } = usePostDetailsModal()
     const handleImageClick = (index: number) => {
         setPostModalProps({ postId, images, selectedImageIndex: index })
         // Open the modal if it's not already open

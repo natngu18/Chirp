@@ -1,10 +1,16 @@
 import { axiosInstance } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
 import { GetSearchSuggestionsQuery, SearchSuggestionsResponse } from '../types'
+import { useAuth } from '@/features/auth/context/AuthContext'
 export const getSearchSuggestions = async (
-    params: GetSearchSuggestionsQuery
+    params: GetSearchSuggestionsQuery,
+    token: string
 ): Promise<SearchSuggestionsResponse> => {
+    // Pass token to calculate if current user is following requested user (even though it doesn't require auth currently)
     const response = await axiosInstance.get('search/suggestions', {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
         params: {
             searchText: params.searchText,
             userSuggestionsCount: params.userSuggestionsCount,
@@ -14,10 +20,12 @@ export const getSearchSuggestions = async (
 }
 
 export const useGetSearchSuggestions = (params: GetSearchSuggestionsQuery) => {
+    const { token } = useAuth()
+
     return useQuery({
         queryKey: ['searchSuggestions', params],
-        queryFn: () => getSearchSuggestions(params),
-        enabled: !!params.searchText,
+        queryFn: () => getSearchSuggestions(params, token),
+        enabled: !!params.searchText && !!token,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
     })

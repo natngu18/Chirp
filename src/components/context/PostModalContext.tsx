@@ -24,7 +24,7 @@ const PostModalStateContext = createContext<PostModalContextType | undefined>(
 type Props = {
     children: React.ReactNode
 }
-export const PostModalProvider = ({ children }: Props) => {
+export const PostDetailsModalProvider = ({ children }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [postModalProps, setPostModalProps] = useState<PostModalProps | null>(
         null
@@ -45,7 +45,7 @@ export const PostModalProvider = ({ children }: Props) => {
     )
 }
 
-export const usePostModal = () => {
+export const usePostDetailsModal = () => {
     const context = useContext(PostModalStateContext)
 
     if (!context) {

@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { auth } from '@/firebase/firebase'
 import storage from '@/lib/storage'
-import { useGetUserById } from '../api/getUser'
+import { useGetUserById } from '../api/getUserById'
 import { UserResponse } from '../types'
 
 type Props = {

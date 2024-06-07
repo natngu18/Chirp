@@ -1,12 +1,12 @@
 import { Media } from '@/types'
-import { usePostModal } from '@/components/context/PostModalContext'
+import { usePostDetailsModal } from '@/components/context/PostModalContext'
 type Props = {
     images: Media[]
     postId: string
 }
 
 function PostImageGallery({ images, postId }: Props) {
-    const { isOpen, toggle, setPostModalProps } = usePostModal()
+    const { isOpen, toggle, setPostModalProps } = usePostDetailsModal()
     const handleImageClick = (index: number) => {
         setPostModalProps({ postId, images, selectedImageIndex: index })
         // Open the modal if it's not already open
