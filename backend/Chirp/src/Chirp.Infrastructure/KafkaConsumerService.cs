@@ -40,9 +40,31 @@ namespace Chirp.Infrastructure
                 using (var consumerBuilder = new ConsumerBuilder<string, string>(consumerConfig).Build())
                 {
 
-                    consumerBuilder.Subscribe(new List<string> { "postgres.public.Posts", "postgres.public.Users" });
+                    var subscribedTopics = new List<string>();
+                    var topicsToSubscribe = new List<string> { "postgres.public.Posts", "postgres.public.Users" };
+                    //consumerBuilder.Subscribe(new List<string> { "postgres.public.Posts", "postgres.public.Users" });
                     while (!stoppingToken.IsCancellationRequested)
                     {
+                        if (subscribedTopics.Count != topicsToSubscribe.Count)
+                        {
+                            // Subscribe to topics if they exist
+
+                            using (var adminClient = new AdminClientBuilder(new AdminClientConfig { BootstrapServers = _configuration["Kafka:BootstrapServers"] }).Build())
+                            {
+                                var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(20));
+                                var topics = metadata.Topics.Select(t => t.Topic).ToList();
+
+                                foreach (var topic in topicsToSubscribe)
+                                {
+                                    if (topics.Contains(topic) && !subscribedTopics.Contains(topic))
+                                    {
+                                        consumerBuilder.Subscribe(topic);
+                                        subscribedTopics.Add(topic);
+                                    }
+                                }
+                            }
+                        }
+
                         //var consumerData = consumerBuilder.Consume();
                         var consumerData = consumerBuilder.Consume(TimeSpan.FromSeconds(1));
                         if (consumerData != null && consumerData?.Message != null)
@@ -122,6 +144,9 @@ namespace Chirp.Infrastructure
 
 
                         }
+
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+
                     }
 
                 };
