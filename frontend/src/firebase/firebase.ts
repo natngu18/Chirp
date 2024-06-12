@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 // import { getAnalytics } from 'firebase/analytics'
-import { getAuth } from 'firebase/auth'
+import { connectAuthEmulator, getAuth } from 'firebase/auth'
 const firebaseConfig = {
     apiKey: 'AIzaSyB_uBvRrjyM1SEayMVRBgDGptbGb-KwQrI',
     authDomain: 'chirps-a4ee9.firebaseapp.com',
@@ -14,6 +14,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
-// const analytics = getAnalytics(app)
 
+// // Connect to the Firebase Authentication Emulator
+connectAuthEmulator(auth, 'http://127.0.0.1:9099')
+// const analytics = getAnalytics(app)
 export { app, auth }

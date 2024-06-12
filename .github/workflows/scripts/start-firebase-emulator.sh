@@ -1,0 +1,1 @@
+firebase emulators:start --only storage,auth --project chirps-a4ee9 &
