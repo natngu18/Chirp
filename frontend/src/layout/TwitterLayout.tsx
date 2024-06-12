@@ -1,27 +1,21 @@
 import CollapsibleSidebar from '@/components/CollapsibleSidebar'
 import { NavItem } from '@/components/types'
 import { useAuth } from '@/features/auth/context/AuthContext'
-import PostDetailsModal from '@/features/image/components/PostDetailsModal'
+import PostDetailsModal from '@/features/post/components/PostDetailsModal'
 import { Searchbar } from '@/features/search/components/Searchbar'
 import WhoToFollowCard from '@/features/user/components/WhoToFollowCard'
-import { CircleUserRoundIcon, LayoutDashboard } from 'lucide-react'
+import { CircleUserRoundIcon, HomeIcon } from 'lucide-react'
 
 export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
     const { appUser } = useAuth()
     const userNavItems: NavItem[] = [
         {
             title: 'Home',
-            icon: LayoutDashboard,
+            icon: HomeIcon,
             href: '', // index route
             color: 'text-sky-500',
         },
 
-        {
-            title: 'Categories',
-            icon: LayoutDashboard,
-            href: '/test',
-            color: 'text-sky-500',
-        },
         {
             title: 'Profile',
             icon: CircleUserRoundIcon,
@@ -31,11 +25,6 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
     ]
     return (
         <div className="flex w-full justify-center ">
-            {/* TODO: Disable collapse button on non-mobile
-                (No point to collapse on desktop, since it doesn't make main screen bigger,
-                    infact it makes it worse since main feed is off-center
-                )
-            */}
             <CollapsibleSidebar navItems={userNavItems} />
             <div className="min-h-screen w-full max-w-xl  border-x-0 border-r border-light-border  dark:border-dark-border xs:border-x">
                 {children}

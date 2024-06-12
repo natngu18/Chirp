@@ -219,7 +219,11 @@ const EditProfileForm = React.forwardRef<HTMLButtonElement, Props>(
                                             )}
                                             onChange={(event) => {
                                                 // User has selected files
-                                                if (event.target.files) {
+                                                if (
+                                                    event.target.files &&
+                                                    event.target.files.length >
+                                                        0
+                                                ) {
                                                     // Convert the FileList object to an array
                                                     const newFiles = Array.from(
                                                         event.target.files
@@ -270,7 +274,11 @@ const EditProfileForm = React.forwardRef<HTMLButtonElement, Props>(
                                             )}
                                             onChange={(event) => {
                                                 // User has selected files
-                                                if (event.target.files) {
+                                                if (
+                                                    event.target.files &&
+                                                    event.target.files.length >
+                                                        0
+                                                ) {
                                                     // Convert the FileList object to an array
                                                     const newFiles = Array.from(
                                                         event.target.files

@@ -49,7 +49,7 @@ export default function CollapsibleSidebar({
                         </div>
                     </div>
                 </div>
-                <div className="sticky top-[92%]">
+                <div className="sticky md:top-[92%] top-[80%]">
                     <div className="flex items-center justify-center w-full">
                         <UserMenu
                             isSmallerThanXlScreen={isSmallerThanXlScreen}

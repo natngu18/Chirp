@@ -1,7 +1,7 @@
 import { usePostDetailsModal } from '@/components/context/PostModalContext'
 import { Dialog, DialogClose, DialogContent } from '@/components/ui/dialog'
 import useMediaQuery from '@/hooks/useMediaQuery'
-import PostImageModalCarousel from './PostImageModalCarousel'
+import PostImageModalCarousel from '../../image/components/PostImageModalCarousel'
 import PostDetails from '@/features/post/components/PostDetails'
 import { X } from 'lucide-react'
 

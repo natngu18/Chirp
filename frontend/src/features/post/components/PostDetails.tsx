@@ -9,9 +9,10 @@ import PostForm from './PostForm'
 import { Separator } from '@/components/ui/separator'
 
 type Props = {
-    // Should be provided when not part of the route params.
+    // This prop is used to override the postId in the url.
+    // Or to display a specific post in a modal without using url params.
     propPostId?: string
-    // Specifically set to false when in image modal view
+    // Specifically set to false in PostDetailsModal (which already displays images in a carousel)
     displayImagesForSpecificPost?: boolean
 }
 function PostDetails({
@@ -19,8 +20,10 @@ function PostDetails({
     displayImagesForSpecificPost = true,
 }: Props) {
     const { postId: urlPostId } = useParams()
+    // We have a PostDetailsModal where PostDetails is displayed, which can be triggered from a variety of places,
+    // including the /post/:postId route (which is also where PostDetails is displayed).
     // NOTE: propPostId should have precedence over urlPostId,
-    // because we are capable of triggering image modal view for a post different
+    // because we are capable of triggering PostDetailsModal for a post different
     // than the one in the url.
     const postId = propPostId ? propPostId : urlPostId
 

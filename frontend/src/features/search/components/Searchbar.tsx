@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { GetSearchSuggestionsQuery } from '../types'
 import CircularButton from '@/components/CircularButton'
 import { XIcon } from 'lucide-react'
-import SearchSuggestions from './SearchSuggestions'
+import SearchbarSearchSuggestions from './SearchbarSearchSuggestions'
 import { useOutsideClick } from '@/hooks/useOutsideClick'
 import { useNavigate } from 'react-router'
 import { createSearchParams } from 'react-router-dom'
@@ -82,7 +82,7 @@ export const Searchbar = () => {
                         <CommandList className="absolute  bg-white z-50 w-full flex flex-col shadow-xl rounded-md">
                             {/* Display search results only when focused */}
                             {open && (
-                                <SearchSuggestions
+                                <SearchbarSearchSuggestions
                                     suggestionParams={suggestionParams}
                                     onSuggestionSelect={() => setOpen(false)}
                                 />

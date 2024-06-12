@@ -2,18 +2,18 @@ import { useNavigate, useParams } from 'react-router'
 import { useInView } from 'react-intersection-observer'
 import CircularButton from '@/components/CircularButton'
 import { ArrowLeftIcon, CalendarIcon, MapPin } from 'lucide-react'
-import FollowButton from './FollowButton'
+import FollowButton from '../features/user/components/FollowButton'
 import { formatInTimeZone } from '@/lib/utils'
 import { parseISO } from 'date-fns'
-import { useGetUserByUsername } from '../api/getUserByUsername'
+import { useGetUserByUsername } from '../features/user/api/getUserByUsername'
 import { Spinner } from '@/components/Spinner'
-import UserTabs from './UserTabs'
+import UserTabs from '../features/user/components/UserTabs'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { Button } from '@/components/ui/button'
-import EditProfileModal from './EditProfileModal'
-import Image from '../../image/components/Image'
+import EditProfileModal from '../features/user/components/EditProfileModal'
+import Image from '../features/image/components/Image'
 
-export const UserProfile = () => {
+export const UserProfilePage = () => {
     const { firebaseUser } = useAuth()
     const params = useParams()
     const { data: user } = useGetUserByUsername(params.username!)
@@ -61,7 +61,7 @@ export const UserProfile = () => {
                 {user.backgroundImage ? (
                     <Image
                         src={user.backgroundImage.url}
-                        className="aspect-3/1 sm:min-h-[200px]"
+                        className="aspect-[3/1] sm:min-h-[200px]"
                         rounded={false}
                     />
                 ) : (
@@ -139,7 +139,6 @@ export const UserProfile = () => {
                 </div>
 
                 <UserTabs username={user.username} />
-                {/* <Separator /> */}
             </div>
         </div>
     )

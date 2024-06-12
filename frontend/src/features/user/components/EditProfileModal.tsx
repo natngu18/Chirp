@@ -81,7 +81,6 @@ function EditProfileModal({ children }: Props) {
                                 location: query.data?.location ?? '',
                             }}
                         />
-                        <div className="min-h-screen">we</div>
                     </motion.div>
                 </ScrollArea>
             </DialogContent>

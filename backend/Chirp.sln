@@ -5,9 +5,9 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B6480910-BD23-4DC8-990C-E256A80196D2}"
 	ProjectSection(SolutionItems) = preProject
-		connector.json = connector.json
 		docker-compose.yaml = docker-compose.yaml
 		user-connector.json = user-connector.json
+		post-connector.json = post-connector.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{03C1C584-8521-439E-B371-B8C935279B34}"

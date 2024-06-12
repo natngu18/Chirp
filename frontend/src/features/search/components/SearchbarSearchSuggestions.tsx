@@ -3,15 +3,17 @@ import useDebounce from '@/hooks/useDebounce'
 import { useGetSearchSuggestions } from '../api/getSearchSuggestions'
 import { CommandGroup, CommandItem } from '@/components/ui/command'
 import UserSearchSuggestionItem from '@/features/user/components/UserSearchSuggestionItem'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams } from 'react-router-dom'
 import { Spinner } from '@/components/Spinner'
 type Props = {
     suggestionParams: GetSearchSuggestionsQuery
     onSuggestionSelect?: () => void
 }
 
-function SearchSuggestions({ suggestionParams, onSuggestionSelect }: Props) {
-    const navigate = useNavigate()
+function SearchbarSearchSuggestions({
+    suggestionParams,
+    onSuggestionSelect,
+}: Props) {
     const debouncedSearch = useDebounce(suggestionParams, 500)
     // Disabled when search text is empty string
     const getSearchSuggestionsQuery = useGetSearchSuggestions(debouncedSearch)
@@ -29,12 +31,6 @@ function SearchSuggestions({ suggestionParams, onSuggestionSelect }: Props) {
                     className="text-md hover:cursor-pointer"
                     asChild
                     onSelect={() => {
-                        // navigate({
-                        //     pathname: '/search',
-                        //     search: createSearchParams({
-                        //         q: suggestionParams.searchText,
-                        //     }).toString(),
-                        // })
                         if (onSuggestionSelect) onSuggestionSelect()
                     }}
                 >
@@ -68,4 +64,4 @@ function SearchSuggestions({ suggestionParams, onSuggestionSelect }: Props) {
     )
 }
 
-export default SearchSuggestions
+export default SearchbarSearchSuggestions

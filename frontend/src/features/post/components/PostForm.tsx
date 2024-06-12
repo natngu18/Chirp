@@ -131,10 +131,14 @@ function PostForm({
                                         ref={fileInputRef}
                                         multiple={true}
                                         type="file"
+                                        data-testid="post-file-input"
                                         accept={ACCEPTED_IMAGE_TYPES.join(',')}
                                         onChange={(event) => {
                                             // User has selected files
-                                            if (event.target.files) {
+                                            if (
+                                                event.target.files &&
+                                                event.target.files.length > 0
+                                            ) {
                                                 // Convert the FileList object to an array
                                                 const newFiles = Array.from(
                                                     event.target.files

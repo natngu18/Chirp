@@ -27,14 +27,19 @@ export const getPostsBySearch = async ({
 }
 
 export const useGetPostsBySearchInfinite = (
-    params: PaginationParams & { searchText: string }
+    params: PaginationParams & { searchText: string | null }
 ) => {
     const { token } = useAuth()
     return useInfiniteQuery({
-        // queryKey: ['postSearchResults', params.searchText],
-        queryKey: postQueryKeys.searchResults(params.searchText),
+        queryKey: postQueryKeys.searchResults(params.searchText!),
         queryFn: ({ pageParam = 1 }) =>
-            getPostsBySearch({ ...params, pageNumber: pageParam, token }),
+            getPostsBySearch({
+                ...params,
+                // search text is guaranteed to be non-null (enabled option)
+                searchText: params.searchText!,
+                pageNumber: pageParam,
+                token,
+            }),
         getNextPageParam: (lastPageParams) =>
             lastPageParams.hasNextPage
                 ? lastPageParams.pageNumber + 1
