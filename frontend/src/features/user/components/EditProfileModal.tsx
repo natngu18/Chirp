@@ -26,6 +26,8 @@ function EditProfileModal({ children }: Props) {
     const { mutate, isPending } = useUpdateUser(username!)
 
     const [open, setOpen] = React.useState(false)
+
+    // Submit  form in child component
     const submitFormRef = React.useRef<HTMLButtonElement>(null)
     if (query.isLoading || !query.data)
         return (

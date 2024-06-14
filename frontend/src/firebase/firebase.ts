@@ -16,6 +16,8 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 
 // // Connect to the Firebase Authentication Emulator
-connectAuthEmulator(auth, 'http://127.0.0.1:9099')
+if (import.meta.env.VITE_NODE_ENV === 'development') {
+    connectAuthEmulator(auth, 'http://127.0.0.1:9099')
+}
 // const analytics = getAnalytics(app)
 export { app, auth }

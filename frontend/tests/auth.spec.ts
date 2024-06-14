@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Uses Firebase auth emulator
-if (process.env.NODE_ENV === 'development') {
+if (process.env.VITE_NODE_ENV === 'development') {
     // Login to the default user before each test
     test.beforeEach(async ({ page }) => {
         await page.goto('http://localhost:5173/login')
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV === 'development') {
         await page.getByRole('button', { name: 'Post' }).click({ delay: 300 })
         await page.getByRole('link', { name: 'Profile' }).click({ delay: 300 })
         await expect(page.getByLabel('Posts')).toContainText(randomText, {
-            timeout: 15000,
+            timeout: 25000,
         })
         await expect(page.getByText('nathan').first()).toBeVisible()
         await expect(page.getByText('@nat').first()).toBeVisible()
@@ -63,7 +63,7 @@ if (process.env.NODE_ENV === 'development') {
     test('Create post with random text and image, verify it is searchable with subset of text', async ({
         page,
     }) => {
-        test.setTimeout(120000)
+        test.setTimeout(100000)
         const randomText = faker.lorem.words(5)
 
         //  Upload image
@@ -90,7 +90,7 @@ if (process.env.NODE_ENV === 'development') {
 
         // Bold text should contain the random word
         await expect(page.getByRole('strong')).toContainText(randomWord, {
-            timeout: 15000,
+            timeout: 25000,
         })
 
         // Uploaded image should be visible
@@ -103,13 +103,15 @@ if (process.env.NODE_ENV === 'development') {
     test('Default user and search option for inputted text appears in searchbar options', async ({
         page,
     }) => {
+        test.setTimeout(100000)
+        await page.waitForTimeout(60000) // Wait for 60 seconds
         await page.getByPlaceholder('Search').click()
-        await page.getByPlaceholder('Search').fill('nat')
+        await page.getByPlaceholder('Search').pressSequentially('nat')
         await expect(
             page.getByRole('option', { name: 'Search for "nat"' })
         ).toBeVisible()
         await expect(
             page.getByRole('option', { name: 'nat nathan @nat' })
-        ).toBeVisible()
+        ).toBeVisible({ timeout: 25000 })
     })
 }

@@ -51,23 +51,23 @@ export const useUpdateUser = (username: string) => {
     return useMutation({
         mutationFn: (request: UpdateUserCommand) =>
             updateUser(createFormData(request), username),
-        // Always refetch after error or success:
-        onSettled: async (data, err, request) => {
+        //
+        onSuccess: async (data, request) => {
             await queryClient.invalidateQueries({
                 queryKey: userQueryKeys.detail(username),
             })
 
-            // New user data after update from above query.
-            const newUserData =
+            // User data from the refetch after invalidation (will hold new data after user update).
+            const newOrExistingUserData =
                 await queryClient.getQueryData<UserDetailedResponse>(
                     userQueryKeys.detail(username)
                 )
 
             // if query fails, return
-            if (!newUserData) return
-            // If user updates image
-            if (request.avatar) {
-                // Update all user posts with new avatar
+            if (!newOrExistingUserData) return
+            // If user updates image or display name
+            if (request.avatar || request.displayName) {
+                // Update all user posts with new avatar and/or display name
                 queryClient.setQueriesData(
                     {
                         queryKey: postQueryKeys.userLists(username),
@@ -91,9 +91,9 @@ export const useUpdateUser = (username: string) => {
                                         ...post,
                                         author: {
                                             ...post.author,
-                                            avatar: newUserData.avatar
-                                                ? newUserData.avatar
-                                                : post.author.avatar,
+                                            avatar: newOrExistingUserData.avatar,
+                                            displayName:
+                                                newOrExistingUserData.displayName,
                                         },
                                     }
                                 }),
@@ -118,7 +118,7 @@ export const useUpdateUser = (username: string) => {
                 if (!topUsers) return
                 // Check if the user is in the top users list
                 const userIndex = topUsers?.findIndex(
-                    (user) => user.id === newUserData.id
+                    (user) => user.id === newOrExistingUserData.id
                 )
                 // If the user is in the list, update their avatar
                 if (userIndex !== undefined && userIndex !== -1) {
@@ -126,7 +126,8 @@ export const useUpdateUser = (username: string) => {
                     const updatedTopUsers = [...topUsers]
                     updatedTopUsers[userIndex] = {
                         ...updatedTopUsers[userIndex],
-                        avatar: newUserData.avatar,
+                        avatar: newOrExistingUserData.avatar,
+                        displayName: newOrExistingUserData.displayName,
                     }
                     // Update the query data
                     queryClient.setQueryData(
@@ -143,7 +144,7 @@ export const useUpdateUser = (username: string) => {
                 followingsCount,
                 backgroundImage,
                 ...userResponse
-            } = newUserData
+            } = newOrExistingUserData
             localStorage.setUser({ ...userResponse })
             queryClient.setQueryData<UserResponse>(
                 ['user', firebaseUser?.uid],
