@@ -8,7 +8,7 @@ type Props = {
 }
 function MediaPreview({ file, onDelete }: Props) {
     return (
-        <Card className="relative w-full h-full overflow-hidden aspect-square min-h-72">
+        <Card className="relative w-full h-full overflow-hidden ">
             <img
                 src={URL.createObjectURL(file)}
                 className="w-full object-cover h-full rounded-md"

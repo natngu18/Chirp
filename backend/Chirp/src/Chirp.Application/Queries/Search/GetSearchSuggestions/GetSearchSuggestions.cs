@@ -58,7 +58,12 @@ namespace Chirp.Application.Queries.Search.GetSearchSuggestions
             {
                 var userSuggestionIds = searchResponse.Documents.Select(u => u.Id).ToList();
                 var userEntities = await _dbContext.Users.Where(u => userSuggestionIds.Contains(u.Id)).Include(u => u.Medias.Where(m => m.IsAvatar == true)).ToListAsync();
-                var userRes = _mapper.Map<List<UserBriefResponse>>(userEntities);
+                // Order user entities based on original Elasticsearch query (which orders based on score)
+                var orderedUserEntities = userSuggestionIds
+                    .Select(id => userEntities.FirstOrDefault(u => u.Id == id))
+                    .Where(user => user != null)
+                    .ToList();
+                var userRes = _mapper.Map<List<UserBriefResponse>>(orderedUserEntities);
                 // Check if current user is following each user
                 var currentUserId = _currentUser.Id;
                 foreach (var user in userRes)

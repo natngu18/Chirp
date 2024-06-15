@@ -29,10 +29,8 @@ const signUpSchema = z
         message: "Passwords don't match",
         path: ['passwordConfirmation'],
     })
-type Props = {
-    onSubmitAction?: () => void
-}
-export function SignUpForm({ onSubmitAction }: Props) {
+
+export function SignUpForm() {
     const [isSigningUp, setIsSigningUp] = useState(false)
     const { mutate } = useCreateUser()
     const form = useForm<z.infer<typeof signUpSchema>>({
@@ -40,6 +38,7 @@ export function SignUpForm({ onSubmitAction }: Props) {
         defaultValues: {
             email: '',
             password: '',
+            passwordConfirmation: '',
         },
     })
 
@@ -51,19 +50,25 @@ export function SignUpForm({ onSubmitAction }: Props) {
                 // api won't return error if user already exists, it just wont create it.
                 mutate({ email: values.email, id: userCredential.user.uid })
             })
-            // .then(() => {
-            //     // Only call the action after the user is successfully created in API call
-            //     // (No other errors occurred, useful if used in a modal and action is to close the modal)
-            //     // so we can view the resulting errors without the modal closing
-            //     if (onSubmitAction) {
-            //         onSubmitAction()
-            //     }
-            // })
             .catch((error) => {
                 if (error instanceof FirebaseError) {
                     const errorMessage = generateFirebaseAuthErrorMessage(error)
+                    switch (error.code) {
+                        case 'auth/invalid-email':
+                        case 'auth/user-not-found':
+                        case 'auth/email-already-in-use':
+                            form.setError('email', { message: errorMessage })
+                            break
+                        case 'auth/wrong-password':
+                        case 'auth/weak-password':
+                            form.setError('password', { message: errorMessage })
+                            break
+                        default:
+                            form.setError('email', { message: errorMessage })
+                            form.setError('password', { message: errorMessage })
+                            break
+                    }
                 }
-                console.log('caught error: ', error.message)
             })
             .finally(() => {
                 setIsSigningUp(false)

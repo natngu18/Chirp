@@ -109,9 +109,12 @@ function PostDetails({
                                 {/* Rendered only below the relevant post (when post.id == postId (aka last)) */}
                                 {post.id == Number(postId) && (
                                     <>
+                                        {/* Post form for replies */}
+
                                         <PostForm
                                             placeholder="Post your reply"
                                             parentPostId={post.id.toString()}
+                                            showToast={false} // Hide success toast because post will be displayed immediately in replies
                                         />
                                         <Separator />
                                         <PostReplies
