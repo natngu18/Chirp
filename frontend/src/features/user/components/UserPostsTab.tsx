@@ -31,13 +31,14 @@ function UserPostsTab({ username }: Props) {
             {query.data?.pages.map((page) => (
                 <PostList key={page.pageNumber} posts={page.items} />
             ))}
-            <div
-                ref={ref}
-                className="min-h-[1px] flex items-center justify-center bg-transparent"
-            >
-                {query.isFetchingNextPage && <Spinner />}
-                {!query.hasNextPage && <div>No more results</div>}
-            </div>
+            {query.hasNextPage && (
+                <div
+                    ref={ref}
+                    className="min-h-[1px] flex items-center justify-center bg-transparent"
+                >
+                    {query.isFetchingNextPage && <Spinner />}
+                </div>
+            )}
         </>
     )
 }

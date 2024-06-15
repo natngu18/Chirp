@@ -12,15 +12,15 @@ function WhoToFollowCard() {
                 </CardTitle>
             </CardHeader>
 
-            {query.isLoading && (
+            {query.isLoading || !query.data ? (
                 <div className="flex items-center justify-center h-32">
                     <Spinner />
                 </div>
+            ) : (
+                query.data?.map((user) => (
+                    <UserWhoToFollowItem key={user.id} user={user} />
+                ))
             )}
-
-            {query.data?.map((user) => (
-                <UserWhoToFollowItem key={user.id} user={user} />
-            ))}
         </Card>
     )
 }

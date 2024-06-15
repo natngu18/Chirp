@@ -1,24 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { AutosizeTextarea } from '@/components/AutosizeTextArea'
 import ButtonWithLoading from '@/components/ButtonWithLoading'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { arrayToFileList, cn, sizeInMB } from '@/lib/utils'
 import MediaCarousel from './MediaCarousel'
 import CircularButton from '@/components/CircularButton'
 import { ImageIcon } from 'lucide-react'
 import MediaPreview from './MediaPreview'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import { useCreatePost } from '../api/createPost'
+import { ToastAction } from '@/components/ui/toast'
+import { useNavigate } from 'react-router'
 const MAX_POST_TEXT_LENGTH = 200
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 const MAX_IMAGE_SIZE_MB = 4
@@ -56,11 +52,15 @@ type Props = {
     placeholder?: string
     buttonText?: string
     parentPostId?: string
+    onPostSuccess?: () => void
+    showToast?: boolean
 }
 function PostForm({
     placeholder = 'What are you thinking?',
     buttonText = 'Post',
     parentPostId,
+    onPostSuccess,
+    showToast = true,
 }: Props) {
     const form = useForm<z.infer<typeof postSchema>>({
         reValidateMode: 'onChange',
@@ -71,20 +71,22 @@ function PostForm({
             images: undefined,
         },
     })
+    const { toast } = useToast()
+    const navigate = useNavigate()
     const { mutate, isPending } = useCreatePost(parentPostId)
-    const [remainingText, setRemainingText] = useState(MAX_POST_TEXT_LENGTH)
+    // const [remainingText, setRemainingText] = useState(MAX_POST_TEXT_LENGTH)
     // Used to trigger file input w/ button
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const text = form.watch('text')
     const images = form.watch('images')
 
-    useEffect(() => {
-        setRemainingText(MAX_POST_TEXT_LENGTH - text.length)
-    }, [text])
+    // useEffect(() => {
+    //     setRemainingText(MAX_POST_TEXT_LENGTH - text.length)
+    // }, [text])
 
     const onSubmit = (values: z.infer<typeof postSchema>) => {
-        console.log('subbmitting these values : ', values)
+        console.log(values)
         mutate(
             {
                 text: values.text,
@@ -93,9 +95,25 @@ function PostForm({
                     : [],
             },
             {
-                onSuccess: () => {
+                onSuccess: (postId) => {
                     form.reset()
-                    console.log('form values after reset: ', form.getValues())
+                    onPostSuccess?.()
+                    if (showToast) {
+                        toast({
+                            className: cn(
+                                'fixed md:max-w-[420px] bottom-3 left-1/2 transform -translate-x-1/2'
+                            ),
+                            description: `Post created!`,
+                            action: (
+                                <ToastAction
+                                    altText="Goto created post"
+                                    onClick={() => navigate(`/post/${postId}`)}
+                                >
+                                    View
+                                </ToastAction>
+                            ),
+                        })
+                    }
                 },
             }
         )
@@ -131,10 +149,14 @@ function PostForm({
                                         ref={fileInputRef}
                                         multiple={true}
                                         type="file"
+                                        data-testid="post-file-input"
                                         accept={ACCEPTED_IMAGE_TYPES.join(',')}
                                         onChange={(event) => {
                                             // User has selected files
-                                            if (event.target.files) {
+                                            if (
+                                                event.target.files &&
+                                                event.target.files.length > 0
+                                            ) {
                                                 // Convert the FileList object to an array
                                                 const newFiles = Array.from(
                                                     event.target.files
@@ -197,14 +219,26 @@ function PostForm({
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <AutosizeTextarea
-                                        placeholder={placeholder}
-                                        minHeight={72}
-                                        className="resize-none "
-                                        {...field}
-                                    />
+                                    <div className="relative">
+                                        <AutosizeTextarea
+                                            minHeight={72}
+                                            className="resize-none pt-3"
+                                            placeholder={placeholder}
+                                            {...field}
+                                        />
+                                        <span
+                                            className={`absolute top-0 right-1 text-xs  ${
+                                                text.length >
+                                                MAX_POST_TEXT_LENGTH
+                                                    ? 'text-rose-500'
+                                                    : 'text-gray-500'
+                                            }`}
+                                        >
+                                            {text?.length}/
+                                            {MAX_POST_TEXT_LENGTH}
+                                        </span>
+                                    </div>
                                 </FormControl>
-                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -216,7 +250,6 @@ function PostForm({
                 <div className="w-full flex justify-center items-center">
                     {images.length > 1 ? (
                         // Show carousel if there are multiple images
-                        // TODO: display total size of images and size for each image
                         <MediaCarousel
                             medias={Array.from(images)}
                             onMediaDelete={handleMediaDelete}
@@ -249,13 +282,9 @@ function PostForm({
                 </CircularButton>
 
                 <div className="flex items-center gap-3">
-                    <div className={remainingText < 0 ? ` text-rose-500` : ``}>
-                        {remainingText}
-                    </div>
-
                     <ButtonWithLoading
                         onClick={form.handleSubmit(onSubmit)}
-                        className="rounded-full w-28"
+                        className="rounded-full w-28 bg-sky-500 hover:bg-sky-500/90"
                         isLoading={isPending}
                         disabled={
                             !form.formState.isValid || !form.formState.isDirty

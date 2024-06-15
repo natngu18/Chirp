@@ -22,6 +22,7 @@ using Testcontainers.PostgreSql;
 
 namespace Chirp.Application.IntegrationTests
 {
+
     public partial class DockerWebAppFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
     {
         private readonly IContainer _zookeeper;
@@ -35,7 +36,6 @@ namespace Chirp.Application.IntegrationTests
         public readonly string DefaultUserId = "Or3ZeuJhVTaqxSIeN2Ku7zKhMwk2";
         private Respawner _respawner;
         private DbConnection _connection;
-
         public DockerWebAppFactory()
         {
             _networkBuilder = new NetworkBuilder()
@@ -50,7 +50,6 @@ namespace Chirp.Application.IntegrationTests
                 .WithNetwork(_networkBuilder)
                 .WithNetworkAliases("postgres")
                 .WithEnvironment("POSTGRES_INITDB_ARGS", "-c wal_level=logical")
-                //.WithCommand("postgres", "-c", "wal_level=logical")
                 .Build();
             _zookeeper = new ContainerBuilder()
                 .WithImage("confluentinc/cp-zookeeper")
@@ -156,8 +155,9 @@ namespace Chirp.Application.IntegrationTests
             // Connectors don't seem to create topic, have to do it manually
             await _broker.ExecAsync(new List<string> { "kafka-topics", "--create", "--bootstrap-server", "localhost:9092", "--replication-factor", "1", "--partitions", "1", "--topic", "postgres.public.Posts" });
             await _broker.ExecAsync(new List<string> { "kafka-topics", "--create", "--bootstrap-server", "localhost:9092", "--replication-factor", "1", "--partitions", "1", "--topic", "postgres.public.Users" });
-            await AddConnectorToDebezium("C:\\Users\\srvth\\source\\repos\\Chirp\\user-connector.json");
-            await AddConnectorToDebezium("C:\\Users\\srvth\\source\\repos\\Chirp\\connector.json");
+            string backendDirectory = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.Parent.FullName;
+            await AddConnectorToDebezium(Path.Combine(backendDirectory, "user-connector.json"));
+            await AddConnectorToDebezium(Path.Combine(backendDirectory, "post-connector.json"));
 
             // Ensure tables are created (migration w/ entity framework)
             using var scope = Services.CreateScope();

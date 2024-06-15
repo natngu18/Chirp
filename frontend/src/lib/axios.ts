@@ -3,7 +3,6 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 const config: AxiosRequestConfig = {
     baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: { 'Content-Type': 'application/json' },
-    // withCredentials: true, // To utilize cookie containing refresh token
 }
 
 export const axiosInstance = axios.create(config)

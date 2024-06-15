@@ -1,7 +1,5 @@
-import CircularButton from '@/components/CircularButton'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ArrowLeftIcon } from 'lucide-react'
 import React from 'react'
 import EditProfileForm from './EditProfileForm'
 import ButtonWithLoading from '@/components/ButtonWithLoading'
@@ -10,6 +8,7 @@ import { useParams } from 'react-router-dom'
 import { useUpdateUser } from '../api/updateUser'
 import { Spinner } from '@/components/Spinner'
 import { motion } from 'framer-motion'
+import StickyHeader from '@/components/StickyHeader'
 type Props = { children: React.ReactNode }
 const variants = {
     hidden: { opacity: 0 },
@@ -26,6 +25,8 @@ function EditProfileModal({ children }: Props) {
     const { mutate, isPending } = useUpdateUser(username!)
 
     const [open, setOpen] = React.useState(false)
+
+    // Submit  form in child component
     const submitFormRef = React.useRef<HTMLButtonElement>(null)
     if (query.isLoading || !query.data)
         return (
@@ -43,30 +44,19 @@ function EditProfileModal({ children }: Props) {
                         initial="hidden"
                         animate="show"
                     >
-                        <div
-                            className={`sticky top-0 backdrop-blur-xl z-50 bg-white/50 flex gap-3 justify-between items-center p-2 transition-opacity duration-200`}
+                        <StickyHeader
+                            title="Edit profile"
+                            backButtonAction={() => setOpen(false)}
                         >
-                            <div className="flex items-center justify-between w-full">
-                                <div className="flex gap-3">
-                                    <CircularButton
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        <ArrowLeftIcon size={20} />
-                                    </CircularButton>
-                                    <h1 className="text-xl">Edit profile</h1>
-                                </div>
+                            <ButtonWithLoading
+                                onClick={() => submitFormRef.current?.click()}
+                                className="rounded-full w-28"
+                                isLoading={isPending}
+                            >
+                                Save
+                            </ButtonWithLoading>
+                        </StickyHeader>
 
-                                <ButtonWithLoading
-                                    onClick={() =>
-                                        submitFormRef.current?.click()
-                                    }
-                                    className="rounded-full w-28"
-                                    isLoading={isPending}
-                                >
-                                    Save
-                                </ButtonWithLoading>
-                            </div>
-                        </div>
                         <EditProfileForm
                             ref={submitFormRef}
                             onSubmit={mutate}
@@ -81,7 +71,6 @@ function EditProfileModal({ children }: Props) {
                                 location: query.data?.location ?? '',
                             }}
                         />
-                        <div className="min-h-screen">we</div>
                     </motion.div>
                 </ScrollArea>
             </DialogContent>

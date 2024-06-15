@@ -111,15 +111,16 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
 
                         {/* Tweet and user info */}
                         {/* padding should be same as avatar for symmetric */}
-                        <div className="py-4 text-sm flex gap-1 flex-col w-full  pr-12">
+                        <div className="py-4 text-sm flex gap-1 flex-col w-full">
                             {/* Userinfo and date */}
-                            <div className="flex  gap-1 items-center ">
+                            <div className="flex  gap-1 items-center flex-wrap text-wrap  w-full overflow-hidden">
                                 <UserHoverCardTrigger
                                     username={post.author.username}
                                 >
                                     <Link
                                         to={`/profile/${post.author.username}`}
                                         onClick={(e) => e.stopPropagation()}
+                                        className="truncate"
                                     >
                                         <span className="font-semibold hover:underline">
                                             {post.author.displayName}
@@ -129,6 +130,7 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                                 <Link
                                     to={`/profile/${post.author.username}`}
                                     onClick={(e) => e.stopPropagation()}
+                                    className="truncate"
                                 >
                                     <span className=" text-gray-500">
                                         @{post.author.username}

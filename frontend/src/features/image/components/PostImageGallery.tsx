@@ -21,6 +21,7 @@ function PostImageGallery({ images, postId }: Props) {
         <div onClick={(e) => e.stopPropagation()}>
             {images.length === 1 && (
                 <button
+                    aria-label="post-image-button"
                     className=" overflow-hidden  aspect-[4/5] hover:cursor-pointer"
                     onClick={() => {
                         handleImageClick(0)
@@ -37,6 +38,7 @@ function PostImageGallery({ images, postId }: Props) {
                 <div className="flex gap-1">
                     {images.map((image, index) => (
                         <button
+                            aria-label="post-image-button"
                             className="w-1/2 overflow-hidden  aspect-[4/5] hover:cursor-pointer"
                             onClick={() => handleImageClick(index)}
                             key={index}
@@ -58,6 +60,7 @@ function PostImageGallery({ images, postId }: Props) {
                 <div className="flex gap-1">
                     {/* Left image */}
                     <button
+                        aria-label="post-image-button"
                         className="w-1/2 overflow-hidden  aspect-[6/4] hover:cursor-pointer"
                         onClick={() => handleImageClick(0)}
                     >
@@ -70,6 +73,7 @@ function PostImageGallery({ images, postId }: Props) {
                     <div className="flex w-1/2 flex-col gap-1">
                         {images.slice(1).map((image, index) => (
                             <button
+                                aria-label="post-image-button"
                                 key={index}
                                 className="overflow-hidden  aspect-[6/4] hover:cursor-pointer"
                                 onClick={() => handleImageClick(index + 1)} // Add the start index of the slice
@@ -94,6 +98,7 @@ function PostImageGallery({ images, postId }: Props) {
                     <div className="flex w-1/2 flex-col gap-1">
                         {images.slice(0, 2).map((image, index) => (
                             <button
+                                aria-label="post-image-button"
                                 key={index}
                                 className="overflow-hidden  aspect-[6/4] hover:cursor-pointer"
                                 onClick={() => handleImageClick(index)}
@@ -114,6 +119,7 @@ function PostImageGallery({ images, postId }: Props) {
                     <div className="flex w-1/2 flex-col gap-1">
                         {images.slice(2).map((image, index) => (
                             <button
+                                aria-label="post-image-button"
                                 key={index}
                                 className="overflow-hidden  aspect-[6/4] hover:cursor-pointer"
                                 onClick={() => handleImageClick(index + 2)} // Add the start index of the slice

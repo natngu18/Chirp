@@ -10,6 +10,7 @@ import { auth } from '@/firebase/firebase'
 import storage from '@/lib/storage'
 import { useGetUserById } from '../api/getUserById'
 import { UserResponse } from '../types'
+import { Spinner } from '@/components/Spinner'
 
 type Props = {
     children?: ReactNode
@@ -60,14 +61,6 @@ export const AuthProvider = ({ children }: Props) => {
         return unsubscribe
     }, [])
 
-    // useEffect(() => {
-    //     if (firebaseUser) {
-    //         firebaseUser.getIdToken().then((idToken) => {
-    //             setToken(idToken)
-    //         })
-    //     }
-    // }, [firebaseUser])
-
     // Store user data from backend in localStorage
     useEffect(() => {
         if (userQuery.data) {
@@ -85,7 +78,12 @@ export const AuthProvider = ({ children }: Props) => {
                 appUser,
             }}
         >
-            {loading || (userQuery.isLoading && <div>Loading...</div>)}
+            {loading ||
+                (userQuery.isLoading && (
+                    <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <Spinner size="lg" />
+                    </div>
+                ))}
             {children}
             {/* {!loading && children} */}
         </AuthContext.Provider>

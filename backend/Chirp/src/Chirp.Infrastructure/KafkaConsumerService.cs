@@ -31,20 +31,16 @@ namespace Chirp.Infrastructure
                     GroupId = "debezium-group",
                     AutoOffsetReset = AutoOffsetReset.Earliest,
                     EnableAutoCommit = true,
-                    StatisticsIntervalMs = 5000,
-                    SessionTimeoutMs = 6000,
-                    HeartbeatIntervalMs = 2000,
                     EnablePartitionEof = true,
                 };
-
                 using (var consumerBuilder = new ConsumerBuilder<string, string>(consumerConfig).Build())
                 {
 
                     consumerBuilder.Subscribe(new List<string> { "postgres.public.Posts", "postgres.public.Users" });
                     while (!stoppingToken.IsCancellationRequested)
                     {
-                        //var consumerData = consumerBuilder.Consume();
-                        var consumerData = consumerBuilder.Consume(TimeSpan.FromSeconds(1));
+
+                        var consumerData = consumerBuilder.Consume(TimeSpan.FromSeconds(2));
                         if (consumerData != null && consumerData?.Message != null)
                         {
                             //System.Diagnostics.Debug.WriteLine($"Consumed message '{consumerData.Message.Value}' at: '{consumerData.TopicPartitionOffset}'");
@@ -122,6 +118,8 @@ namespace Chirp.Infrastructure
 
 
                         }
+
+
                     }
 
                 };

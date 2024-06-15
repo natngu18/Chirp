@@ -35,7 +35,7 @@ function UserTabs({ username }: Props) {
                 value={tabValue}
                 onValueChange={(value) => {
                     setTabValue(value)
-                    navigate(`/profile/${username}/${value}`)
+                    navigate(`/profile/${username}/${value}`, { replace: true })
                 }}
             >
                 <TabsList className="flex justify-between w-full bg-white p-0 m-0">
@@ -48,7 +48,7 @@ function UserTabs({ username }: Props) {
                         >
                             {capitalize(tabName)}
                             {tabValue === tabName && (
-                                <span className="absolute bottom-0 w-1/4 h-1  bg-blue-500 rounded-full"></span>
+                                <span className="absolute bottom-0 w-1/4 h-1  bg-sky-500 rounded-full"></span>
                             )}
                         </TabsTrigger>
                     ))}

@@ -91,6 +91,7 @@ export const useFollow = (username: string) => {
             // Invalidate user's following feed when following/unfollowing
             queryClient.invalidateQueries({
                 queryKey: postQueryKeys.followedUsersPosts(),
+                type: 'all',
             })
         },
         // Always refetch after error or success:

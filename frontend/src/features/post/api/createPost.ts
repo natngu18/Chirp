@@ -49,6 +49,8 @@ export const useCreatePost = (postId?: string) => {
                 exact: false,
                 refetchType: 'all', // by default invalidateQueries() only forces refetch for active queries
             })
+
+            // invalidate current user post medias
             if (appUser && appUser.username) {
                 queryClient.invalidateQueries({
                     queryKey: postQueryKeys.userPostMedias(appUser.username),

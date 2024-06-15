@@ -1,19 +1,19 @@
 import { useNavigate, useParams } from 'react-router'
 import { useInView } from 'react-intersection-observer'
-import CircularButton from '@/components/CircularButton'
-import { ArrowLeftIcon, CalendarIcon, MapPin } from 'lucide-react'
-import FollowButton from './FollowButton'
+import { CalendarIcon, MapPin } from 'lucide-react'
+import FollowButton from '../features/user/components/FollowButton'
 import { formatInTimeZone } from '@/lib/utils'
 import { parseISO } from 'date-fns'
-import { useGetUserByUsername } from '../api/getUserByUsername'
+import { useGetUserByUsername } from '../features/user/api/getUserByUsername'
 import { Spinner } from '@/components/Spinner'
-import UserTabs from './UserTabs'
+import UserTabs from '../features/user/components/UserTabs'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { Button } from '@/components/ui/button'
-import EditProfileModal from './EditProfileModal'
-import Image from '../../image/components/Image'
+import EditProfileModal from '../features/user/components/EditProfileModal'
+import Image from '../features/image/components/Image'
+import StickyHeader from '@/components/StickyHeader'
 
-export const UserProfile = () => {
+export const UserProfilePage = () => {
     const { firebaseUser } = useAuth()
     const params = useParams()
     const { data: user } = useGetUserByUsername(params.username!)
@@ -33,26 +33,21 @@ export const UserProfile = () => {
         )
 
     return (
-        <div className="relative min-h-screen flex flex-col">
+        <div className="relative min-h-screen flex flex-col ">
             {/* Fixed header */}
-            <div
-                className={`sticky top-0 backdrop-blur-xl z-50 bg-white/50 flex gap-3 justify-between items-center p-4 transition-opacity duration-200`}
+            <StickyHeader
+                title={user?.username}
+                backButtonAction={() => navigate(-1)}
             >
-                <div className="flex gap-3 items-center">
-                    <CircularButton onClick={() => navigate(-1)}>
-                        <ArrowLeftIcon size={20} />
-                    </CircularButton>
-                    <h1 className="text-xl">{user?.username}</h1>
-                </div>
-
-                {/* Show this follow button when other one goes out of view. */}
-                <FollowButton
-                    className="w-28"
-                    isShown={!inView}
-                    isFollowing={user.isFollowing}
-                    username={user.username}
-                />
-            </div>
+                {firebaseUser?.uid != user.id && (
+                    <FollowButton
+                        className="w-24"
+                        isFollowing={user.isFollowing}
+                        username={user.username}
+                        isShown={!inView}
+                    />
+                )}
+            </StickyHeader>
 
             {/* User profile */}
             <div className="relative flex flex-col w-full gap-2 ">
@@ -61,7 +56,7 @@ export const UserProfile = () => {
                 {user.backgroundImage ? (
                     <Image
                         src={user.backgroundImage.url}
-                        className="aspect-3/1 sm:min-h-[200px]"
+                        className="aspect-[3/1] sm:min-h-[200px]"
                         rounded={false}
                     />
                 ) : (
@@ -78,7 +73,7 @@ export const UserProfile = () => {
                     {/* Current user */}
                     {firebaseUser?.uid != user.id ? (
                         <FollowButton
-                            className="w-28"
+                            className="w-24"
                             isShown={inView}
                             ref={headerRef}
                             username={user.username}
@@ -139,7 +134,6 @@ export const UserProfile = () => {
                 </div>
 
                 <UserTabs username={user.username} />
-                {/* <Separator /> */}
             </div>
         </div>
     )

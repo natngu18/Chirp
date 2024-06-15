@@ -1,35 +1,23 @@
-import PostSearchSuggestionList from '@/features/post/components/PostSearchSuggestionList'
-import { Navigate, useSearchParams } from 'react-router-dom'
+import StickyHeader from '@/components/StickyHeader'
+import { PostSearchSuggestionsList } from '../features/post/components/PostSearchSuggestionsList'
+import { Searchbar } from '@/features/search/components/Searchbar'
+import { useNavigate } from 'react-router'
 
-export const SearchPage = () => {
-    // const { token } = useAuth()
-    // const params = useParams()
-    const [search] = useSearchParams()
-    const qParam = search.get('q')
+type Props = {}
 
-    // const { data, isLoading } = useQuery({
-    //     ...getPostsBySearchQuery({ searchText: qParam! }),
-    //     enabled: !!qParam,
-    // })
-
-    if (!qParam) {
-        return <Navigate to="/" replace={true} />
-    }
-
-    // if (isLoading) {
-    //     return (
-    //         <div className="flex items-center w-full justify-center">
-    //             <Spinner />
-    //         </div>
-    //     )
-    // }
-    // console.log('search', search)
-
-    // console.log('data', data)
-
+export const SearchPage = ({}: Props) => {
+    const navigate = useNavigate()
     return (
         <div className="min-h-screen flex flex-col">
-            <PostSearchSuggestionList searchText={qParam} />
+            <StickyHeader
+                className=" justify-normal w-full p-2 pr-10"
+                backButtonAction={() => navigate(-1)}
+            >
+                <Searchbar />
+            </StickyHeader>
+            <PostSearchSuggestionsList />
         </div>
     )
 }
+
+export default SearchPage

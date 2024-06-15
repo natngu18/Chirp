@@ -12,11 +12,10 @@ const { SearchPage } = lazyImport(
     () => import('@/pages/SearchPage'),
     'SearchPage'
 )
-// TODO: Userprofile and home page Shouldn't be lazy loaded, suspense should be based on fetching the data...
-// Or could it be both?
-const { UserProfile } = lazyImport(
-    () => import('@/features/user/components/UserProfile'),
-    'UserProfile'
+
+const { UserProfilePage } = lazyImport(
+    () => import('@/pages/UserProfilePage'),
+    'UserProfilePage'
 )
 const MainApp = () => {
     return (
@@ -50,16 +49,12 @@ export const routesForAuthenticatedOnly = [
                 element: <HomePage />,
             },
             {
-                path: 'test',
-                element: <div className="h-[2000px]">2</div>,
-            },
-            {
                 path: 'profile/:username',
                 element: <Outlet />,
                 children: ['replies', `posts`, 'media', 'likes', ''].map(
                     (path) => ({
                         path,
-                        element: <UserProfile />,
+                        element: <UserProfilePage />,
                     })
                 ),
             },

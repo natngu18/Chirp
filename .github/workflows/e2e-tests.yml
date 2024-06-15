@@ -1,0 +1,187 @@
+name: Playwright Tests
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  setup-and-run-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: chirp_db
+          POSTGRES_INITDB_ARGS: -c wal_level=logical
+        ports:
+          - 5200:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      zookeeper:
+        image: confluentinc/cp-zookeeper
+        env:
+          ZOOKEEPER_CLIENT_PORT: 2181
+          ZOOKEEPER_TICK_TIME: 2000
+        ports:
+          - 2181:2181
+        options: --health-cmd "echo srvr | nc localhost 2181 || exit 1" --health-interval 10s --health-timeout 5s --health-retries 20
+
+      broker:
+        image: confluentinc/cp-kafka
+        env:
+          KAFKA_BROKER_ID: 1
+          KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+          KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+          KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+          KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+          KAFKA_JMX_PORT: 9101
+          KAFKA_JMX_HOSTNAME: localhost
+        ports:
+          - 29092:29092
+          - 9092:9092
+          - 9101:9101
+        options: --health-cmd "nc -z localhost 9092 || exit -1" --health-interval 5s --health-timeout 10s --health-retries 10
+      rest-proxy:
+        image: confluentinc/cp-kafka-rest
+        env:
+          KAFKA_REST_BOOTSTRAP_SERVERS: broker:29092
+          KAFKA_REST_HOST_NAME: rest-proxy
+        ports:
+          - 8082:8082
+      debezium:
+        image: debezium/connect:latest
+        env:
+          BOOTSTRAP_SERVERS: broker:29092
+          GROUP_ID: 1
+          CONFIG_STORAGE_TOPIC: connect_configs
+          STATUS_STORAGE_TOPIC: connect_statuses
+          OFFSET_STORAGE_TOPIC: connect_offsets
+          KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+          VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+          CONNECT_TOPIC_CREATION_ENABLE: 'true'
+        ports:
+          - 8083:8083
+        options: --health-cmd "curl --silent --fail -X GET http://localhost:8083/connectors" --health-interval 10s --health-timeout 5s --health-retries 5
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+        env:
+          CLI_JAVA_OPTS: -Xms2g -Xmx2g
+          bootstrap.memory_lock: 'true'
+          discovery.type: single-node
+          xpack.security.enabled: 'false'
+          xpack.security.enrollment.enabled: 'false'
+        ports:
+          - 9200:9200
+        options: --health-cmd "curl -f http://localhost:9200" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+    - uses: actions/checkout@v4
+    - name: Get Kafka cluster ID
+      run: |
+        cluster_id=$(curl -s -X GET "http://127.0.0.1:8082/v3/clusters" | jq -r '.data[0].cluster_id')
+        echo "KAFKA_CLUSTER_ID=$cluster_id" >> $GITHUB_ENV
+    - name: Create Posts Kafka topic via REST Proxy
+      run: |
+        curl -X POST -H "Content-Type: application/json" \
+          -d '{"topic_name": "postgres.public.Posts", "partitions_count": 1, "configs": [{"name": "cleanup.policy", "value": "compact"}]}' \
+          http://127.0.0.1:8082/v3/clusters/${{ env.KAFKA_CLUSTER_ID }}/topics
+        sleep 15 # wait before creating the next topic
+    - name: Create Users Kafka topic via REST Proxy
+      run: |
+        curl -X POST -H "Content-Type: application/json" \
+          -d '{"topic_name": "postgres.public.Users", "partitions_count": 1, "configs": [{"name": "cleanup.policy", "value": "compact"}]}' \
+          http://127.0.0.1:8082/v3/clusters/${{ env.KAFKA_CLUSTER_ID }}/topics
+
+    - name: Add Debezium connectors
+      run: |
+        cd backend
+        curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://127.0.0.1:8083/connectors/ -d @post-connector.json
+        curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://127.0.0.1:8083/connectors/ -d @user-connector.json
+    - name: Wait for backend services to be ready
+      run: |
+        sleep 60 # adjust this as needed
+
+    # .Net Backend
+    - name: Make backend envfile for .NET
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+        envkey_JWT_FIREBASE_VALIDISSUER: ${{ secrets.JWT_FIREBASE_VALIDISSUER }}
+        envkey_JWT_FIREBASE_VALIDAUDIENCE: ${{ secrets.JWT_FIREBASE_VALIDAUDIENCE }}
+        envkey_FIREBASE_BUCKETNAME: ${{ secrets.FIREBASE_BUCKETNAME }}
+        envkey_FIREBASE_STORAGE_BASEURL: ${{ secrets.FIREBASE_STORAGE_BASEURL }}
+        envkey_FIREBASE_DEV_STORAGE_BASEURL: ${{ secrets.FIREBASE_DEV_STORAGE_BASEURL }}
+        envkey_FIREBASE_DEV_AUTH_URL: ${{ secrets.FIREBASE_DEV_AUTH_URL }}
+        file_name: .env
+        directory: backend/Chirp/src/Chirp.Presentation
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: |
+        cd backend
+        dotnet restore
+    - name: Build dotnet project
+      run: |
+        cd backend
+        dotnet build --no-restore
+    - name: Install dotnet-ef tools
+      run: |
+        dotnet new tool-manifest
+        dotnet tool install dotnet-ef
+    - name: Migrate database
+      run: |
+        cd backend/Chirp
+        dotnet dotnet-ef database update --verbose --project src/Chirp.Infrastructure/Chirp.Infrastructure.csproj --startup-project src/Chirp.Presentation/Chirp.Presentation.csproj --context AppDbContext
+    - name: Run dotnet
+      run: |
+        cd backend/Chirp/src/Chirp.Presentation
+        dotnet run &
+    - name: Make frontend envfile
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+        envkey_REACT_APP_UID: ${{ secrets.REACT_APP_UID }}
+        envkey_REACT_APP_FIREBASE_CONFIG: ${{ secrets.REACT_APP_FIREBASE_CONFIG }}
+        envkey_VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+        envkey_VITE_NODE_ENV: ${{ secrets.VITE_NODE_ENV }}
+        file_name: .env
+        directory: frontend
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm ci
+
+    # FIREBASE EMULATOR
+    - name: Install Firebase CLI
+      run: |
+        cd frontend
+        npm install -g firebase-tools
+    - name: Set execute permissions on script
+      run: chmod +x ./.github/workflows/scripts/start-firebase-emulator.sh
+    - name: Start Firebase emulators
+      run: cd ./.github/workflows/scripts && ./start-firebase-emulator.sh
+
+    # PLAYWRIGHT
+    - name: Install Playwright Browsers
+      run: |
+        cd frontend
+        yarn playwright install --with-deps
+      #  npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: |
+        cd frontend
+        npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: frontend/playwright-report/
+        retention-days: 30

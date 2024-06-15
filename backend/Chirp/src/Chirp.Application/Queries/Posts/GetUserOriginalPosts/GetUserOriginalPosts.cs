@@ -46,6 +46,7 @@ namespace Chirp.Application.Queries.Posts.GetUserOriginalPosts
               .Include(p => p.Medias)
               .Include(p => p.Likes)
               .Include(p => p.ChildPosts)
+              .OrderByDescending(p => p.CreatedAt)
             .Select(p => new PostBriefResponse
             {
                 Id = p.Id,

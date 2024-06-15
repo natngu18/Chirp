@@ -39,12 +39,14 @@ function UserMediasTab({ username }: Props) {
                 )}
             </div>
 
-            <div
-                ref={ref}
-                className="min-h-[1px] flex items-center justify-center bg-transparent"
-            >
-                {query.isFetchingNextPage && <Spinner />}
-            </div>
+            {query.hasNextPage && (
+                <div
+                    ref={ref}
+                    className="min-h-[1px] flex items-center justify-center bg-transparent"
+                >
+                    {query.isFetchingNextPage && <Spinner />}
+                </div>
+            )}
         </div>
     )
 }

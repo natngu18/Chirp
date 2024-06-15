@@ -17,7 +17,7 @@ export const HomePage = () => {
 
     if (query.isLoading) {
         return (
-            <div className="flex items-center w-full justify-center">
+            <div className="flex items-center w-full justify-center p-6">
                 <Spinner />
             </div>
         )

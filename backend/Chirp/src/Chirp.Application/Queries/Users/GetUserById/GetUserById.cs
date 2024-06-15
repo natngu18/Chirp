@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Chirp.Application.Common;
+using Chirp.Application.Common.Exceptions;
 using Chirp.Application.Common.Interfaces;
-using Chirp.Application.Queries.Users;
+using Chirp.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Chirp.Application.Common.Exceptions;
-using Chirp.Domain.Entities;
 
 namespace Chirp.Application.Queries.Users.GetUserById
 {
@@ -15,12 +14,12 @@ namespace Chirp.Application.Queries.Users.GetUserById
         public string UserId { get; init; }
     }
 
-    public class GetUserByUsernameQueryHandler : IRequestHandler<GetUserByIdQuery, UserResponse>
+    public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserResponse>
     {
         private readonly IAppDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ICurrentUser _currentUser;
-        public GetUserByUsernameQueryHandler(IAppDbContext dbContext, IMapper mapper, ICurrentUser currentUser)
+        public GetUserByIdQueryHandler(IAppDbContext dbContext, IMapper mapper, ICurrentUser currentUser)
         {
             _dbContext = dbContext;
             _mapper = mapper;
