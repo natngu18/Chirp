@@ -8,9 +8,9 @@ import { Suspense } from 'react'
 import { Outlet } from 'react-router'
 
 const { HomePage } = lazyImport(() => import('@/pages/HomePage'), 'HomePage')
-const { PostSearchSuggestionPage } = lazyImport(
-    () => import('@/pages/PostSearchSuggestionPage'),
-    'PostSearchSuggestionPage'
+const { SearchPage } = lazyImport(
+    () => import('@/pages/SearchPage'),
+    'SearchPage'
 )
 
 const { UserProfilePage } = lazyImport(
@@ -49,10 +49,6 @@ export const routesForAuthenticatedOnly = [
                 element: <HomePage />,
             },
             {
-                path: 'test',
-                element: <div className="h-[2000px]">2</div>,
-            },
-            {
                 path: 'profile/:username',
                 element: <Outlet />,
                 children: ['replies', `posts`, 'media', 'likes', ''].map(
@@ -64,7 +60,7 @@ export const routesForAuthenticatedOnly = [
             },
             {
                 path: 'search',
-                element: <PostSearchSuggestionPage />,
+                element: <SearchPage />,
             },
             {
                 path: 'post/:postId',

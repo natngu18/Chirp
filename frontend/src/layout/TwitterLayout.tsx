@@ -4,10 +4,15 @@ import { useAuth } from '@/features/auth/context/AuthContext'
 import PostDetailsModal from '@/features/post/components/PostDetailsModal'
 import { Searchbar } from '@/features/search/components/Searchbar'
 import WhoToFollowCard from '@/features/user/components/WhoToFollowCard'
-import { CircleUserRoundIcon, HomeIcon } from 'lucide-react'
+import useMediaQuery from '@/hooks/useMediaQuery'
+import { CircleUserRoundIcon, HomeIcon, SearchIcon } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
 export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
     const { appUser } = useAuth()
+    const isSmallerThanLgScreen = useMediaQuery('(max-width: 1024px)')
+    const location = useLocation()
+    const isOnSearchRoute = location.pathname === '/search'
     const userNavItems: NavItem[] = [
         {
             title: 'Home',
@@ -22,6 +27,17 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
             href: `/profile/${appUser?.username}`,
             color: 'text-sky-500',
         },
+        // Conditionally render the search icon
+        ...(isSmallerThanLgScreen
+            ? [
+                  {
+                      title: 'Search',
+                      icon: SearchIcon,
+                      href: '/search',
+                      color: 'text-sky-500',
+                  },
+              ]
+            : []),
     ]
     return (
         <div className="flex w-full justify-center ">
@@ -30,18 +46,12 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
                 {children}
                 {/* Modal to view details for a single post, when image is clicked. */}
                 <PostDetailsModal />
-                <div className="h-[12300px]">x</div>
             </div>
 
             <div className="w-96 flex-col gap-4 px-4 py-3 pt-1 hidden lg:flex">
-                <Searchbar />
+                {/* Hide searchbar because Searchbar displayed in search route */}
+                {!isOnSearchRoute && <Searchbar />}
                 <WhoToFollowCard />
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint
-                dolorem neque quis fuga in deserunt omnis accusantium? Quod
-                deserunt quaerat deleniti magnam suscipit quas nam. Id,
-                praesentium repellendus. At, dolorum facilis minima perspiciatis
-                aliquam quae ipsa. Recusandae ex harum, natus illum ut incidunt,
-                laboriosam amet pariatur officia laudantium distinctio eaque.
             </div>
         </div>
     )

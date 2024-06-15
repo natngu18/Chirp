@@ -28,7 +28,7 @@ function SearchbarSearchSuggestions({
             {/* Link to specific search */}
             {suggestionParams.searchText && getSearchSuggestionsQuery.data && (
                 <CommandItem
-                    className="text-md hover:cursor-pointer"
+                    className="text-md hover:cursor-pointer "
                     asChild
                     onSelect={() => {
                         if (onSuggestionSelect) onSuggestionSelect()
@@ -38,7 +38,11 @@ function SearchbarSearchSuggestions({
                         to={`/search?${createSearchParams({
                             q: suggestionParams.searchText,
                         }).toString()}`}
-                    >{`Search for "${suggestionParams.searchText}"`}</Link>
+                    >
+                        <span className="break-all">
+                            {`Search for "${suggestionParams.searchText}"`}
+                        </span>
+                    </Link>
                 </CommandItem>
             )}
 
