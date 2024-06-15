@@ -1,0 +1,54 @@
+name: .NET tests
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./backend/Chirp/tests/Chirp.Application.UnitTests/Chirp.Application.UnitTests.csproj
+    - name: Build
+      run: dotnet build --no-restore ./backend/Chirp/tests/Chirp.Application.UnitTests/Chirp.Application.UnitTests.csproj
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./backend/Chirp/tests/Chirp.Application.UnitTests/Chirp.Application.UnitTests.csproj
+  
+  integration_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Make envfile for integration tests
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+        envkey_JWT_FIREBASE_VALIDISSUER: ${{ secrets.JWT_FIREBASE_VALIDISSUER }}
+        envkey_JWT_FIREBASE_VALIDAUDIENCE: ${{ secrets.JWT_FIREBASE_VALIDAUDIENCE }}
+        envkey_FIREBASE_BUCKETNAME: ${{ secrets.FIREBASE_BUCKETNAME }}
+        envkey_FIREBASE_STORAGE_BASEURL: ${{ secrets.FIREBASE_STORAGE_BASEURL }}
+        envkey_FIREBASE_DEV_STORAGE_BASEURL: ${{ secrets.FIREBASE_DEV_STORAGE_BASEURL }}
+        envkey_FIREBASE_DEV_AUTH_URL: ${{ secrets.FIREBASE_DEV_AUTH_URL }}
+        file_name: .env
+        directory: backend/Chirp/tests/Chirp.Application.IntegrationTests
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./backend/Chirp/tests/Chirp.Application.IntegrationTests/Chirp.Application.IntegrationTests.csproj
+    - name: Build
+      run: dotnet build --no-restore ./backend/Chirp/tests/Chirp.Application.IntegrationTests/Chirp.Application.IntegrationTests.csproj
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./backend/Chirp/tests/Chirp.Application.IntegrationTests/Chirp.Application.IntegrationTests.csproj
