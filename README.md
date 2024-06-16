@@ -1,3 +1,36 @@
+## Overview
+This is a twitter inspired app which uses Debezium and Kafka for Change Data Capture, pushing changes from primary Postgres database to Elasticsearch to be used for search functionality.
+<br/><br/>Demos can be found in [Demos section](#demos)
+
+## Tools
+
+The following tools and technologies are used in this project:
+- Firebase
+- Debezium
+- Kafka
+- Postgres
+- Elasticsearch
+- Docker
+### Backend
+- ASP.NET Core Web API
+- MediatR
+- xUnit
+- Testcontainers
+
+### Frontend
+- React
+- TypeScript
+- Playwright
+- React Query
+- React router
+- React Hook Form
+- Framer motion
+- Tailwind CSS
+- Shadcn UI
+
+
+
+# Setup
 ## Starting Backend Services
 
 You have two options for Firebase: using the Firebase emulator or the actual Firebase service.
