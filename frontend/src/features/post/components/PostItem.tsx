@@ -164,6 +164,7 @@ const PostItem = forwardRef<HTMLSpanElement, Props>(
                                 {/* Highlighted post text from query */}
                                 <p className="line-clamp-3">
                                     <span
+                                        aria-label="Post text"
                                         dangerouslySetInnerHTML={{
                                             __html: post.text,
                                         }}

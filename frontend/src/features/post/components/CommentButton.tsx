@@ -8,7 +8,11 @@ interface Props {
 
 function CommentButton({ postId, commentCount }: Props) {
     return (
-        <Link className="flex group items-center" to={`/posts/${postId}`}>
+        <Link
+            className="flex group items-center"
+            to={`/posts/${postId}`}
+            aria-label="View comments on post"
+        >
             <span className="group-hover:text-blue-600 rounded-full p-2 group-hover:bg-blue-600/10 transition-colors duration-200">
                 <CiChat1 />
             </span>

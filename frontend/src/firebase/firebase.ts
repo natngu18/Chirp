@@ -17,7 +17,7 @@ const auth = getAuth(app)
 
 // // Connect to the Firebase Authentication Emulator
 if (import.meta.env.VITE_NODE_ENV === 'development') {
-    connectAuthEmulator(auth, 'http://127.0.0.1:9099')
+    connectAuthEmulator(auth, import.meta.env.VITE_FIREBASE_DEV_AUTH_URL)
 }
 // const analytics = getAnalytics(app)
 export { app, auth }

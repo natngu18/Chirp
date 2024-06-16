@@ -55,6 +55,7 @@ export const UserProfilePage = () => {
 
                 {user.backgroundImage ? (
                     <Image
+                        key={user.avatar.url} // Add this line
                         src={user.backgroundImage.url}
                         className="aspect-[3/1] sm:min-h-[200px]"
                         rounded={false}
@@ -65,6 +66,7 @@ export const UserProfilePage = () => {
 
                 <div className="relative flex justify-end  px-6">
                     <Image
+                        key={user.avatar.url} // Add this line
                         src={user.avatar.url}
                         alt={user.username}
                         className="aspect-square p-[2px] bg-background absolute bottom-0 left-6  h-24 w-24"
@@ -97,7 +99,7 @@ export const UserProfilePage = () => {
                             @{user.username}
                         </span>
                     </div>
-                    {user.bio && <p>{user.bio}</p>}
+                    {user.bio && <p aria-label="User bio">{user.bio}</p>}
 
                     <div className="flex flex-col">
                         <span className="flex items-center gap-1 text-md text-gray-500">
@@ -109,7 +111,10 @@ export const UserProfilePage = () => {
                             )}
                         </span>
                         {user.location && (
-                            <span className="flex items-center gap-1 text-md text-gray-500">
+                            <span
+                                aria-label="User location"
+                                className="flex items-center gap-1 text-md text-gray-500"
+                            >
                                 <MapPin size={16} />
                                 {user.location}
                             </span>

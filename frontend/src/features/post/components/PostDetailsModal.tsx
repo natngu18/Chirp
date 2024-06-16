@@ -41,7 +41,7 @@ function PostDetailsModal() {
                 {!isMobileScreen && isOpen && postModalProps && (
                     <div className="border-l overflow-y-auto overflow-x-hidden bg-background w-1/2 ">
                         <PostDetails
-                            propPostId={postModalProps!.postId}
+                            postId={postModalProps!.postId}
                             // Don't need to display images for the post, since they are already displayed above.
                             displayImagesForSpecificPost={false}
                         />

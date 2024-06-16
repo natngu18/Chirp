@@ -11,16 +11,12 @@ const variants = {
     },
 }
 type Props = {
-    // src: string
-    // alt?: string
     rounded?: boolean
     className?: string
     disableAnimation?: boolean
 } & React.ImgHTMLAttributes<HTMLImageElement>
 
 function Image({
-    // src,
-    // alt,
     rounded = false,
     className,
     disableAnimation = false,
@@ -37,8 +33,6 @@ function Image({
             )}
         >
             <img
-                // src={src}
-                // alt={alt}
                 className={`h-full w-full object-cover ${
                     rounded ? 'rounded-full' : ''
                 }`}

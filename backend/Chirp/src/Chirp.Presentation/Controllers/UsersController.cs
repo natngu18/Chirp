@@ -41,7 +41,6 @@ namespace Chirp.Presentation.Controllers
             return Ok(res);
         }
 
-        // TODO: This isn't necessary...
         [HttpGet("{UserId}")]
         public async Task<IActionResult> GetUserById([FromRoute] GetUserByIdQuery command)
         {

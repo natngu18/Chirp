@@ -8,6 +8,8 @@ import useMediaQuery from '@/hooks/useMediaQuery'
 import CreatePostModalTrigger from '@/features/post/components/CreatePostModal'
 import { Button } from './ui/button'
 import { IoCreateOutline } from 'react-icons/io5'
+import { PiBirdLight } from 'react-icons/pi'
+import { Link } from 'react-router-dom'
 
 interface SidebarProps {
     className?: string
@@ -41,17 +43,35 @@ export default function CollapsibleSidebar({
                 className
             )}
         >
-            <div className="relative pt-20 h-full">
-                <div className="sticky top-3 space-y-4 py-4">
-                    <div className="px-3 py-2">
+            <div className="relative h-full">
+                <div className="sticky top-3 space-y-4 ">
+                    <div className="px-3">
                         <div className="mt-3 space-y-1 flex flex-col gap-3">
+                            <Link
+                                to="/"
+                                className={`flex items-center gap-2 w-fit px-3 pt-2 ${
+                                    !isSmallerThanXlScreen
+                                        ? ''
+                                        : 'justify-center'
+                                }`}
+                            >
+                                <PiBirdLight className="stroke h-8 w-8 text-sky-500 stroke-[1.5]" />
+                                {!isSmallerThanXlScreen && (
+                                    <p className="bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-3xl font-bold leading-tight tracking-tighter text-transparent">
+                                        Chirp
+                                    </p>
+                                )}
+                            </Link>
                             <SideNav
                                 className="text-background opacity-0 transition-all duration-300 group-hover:z-50  group-hover:rounded group-hover:bg-foreground group-hover:p-1 group-hover:opacity-100 text-xs absolute -bottom-1/4 left-1/2 transform -translate-x-1/2  "
                                 items={navItems}
                             />
                             <CreatePostModalTrigger>
                                 {isSmallerThanXlScreen ? (
-                                    <button className="self-center  hover:bg-sky-500/90 transition-colors flex items-center justify-center bg-sky-500 text-white rounded-full w-fit p-3 ">
+                                    <button
+                                        aria-label="Create post modal"
+                                        className="self-center  hover:bg-sky-500/90 transition-colors flex items-center justify-center bg-sky-500 text-white rounded-full w-fit p-3 "
+                                    >
                                         <IoCreateOutline className="w-6 h-6" />
                                     </button>
                                 ) : (

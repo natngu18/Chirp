@@ -27,7 +27,7 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
             href: `/profile/${appUser?.username}`,
             color: 'text-sky-500',
         },
-        // Conditionally render the search icon
+        // Conditionally render the search icon when main searchbar is no longer displayed
         ...(isSmallerThanLgScreen
             ? [
                   {
@@ -48,7 +48,7 @@ export const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
                 <PostDetailsModal />
             </div>
 
-            <div className="w-96 flex-col gap-4 px-4 py-3 pt-1 hidden lg:flex">
+            <div className="w-96 flex-col gap-4 px-4 py-3 pt-4 hidden lg:flex">
                 {/* Hide searchbar because Searchbar displayed in search route */}
                 {!isOnSearchRoute && <Searchbar />}
                 <WhoToFollowCard />

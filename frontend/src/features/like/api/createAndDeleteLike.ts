@@ -93,11 +93,5 @@ export const useLike = (postId: string) => {
                 variant: 'destructive',
             })
         },
-        // Always refetch after error or success:
-        // onSettled: () => {
-        //     queryClient.invalidateQueries({
-        //         queryKey: ['postSearchResults', searchText],
-        //     })
-        // },
     })
 }

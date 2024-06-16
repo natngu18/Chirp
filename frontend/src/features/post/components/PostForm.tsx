@@ -7,10 +7,10 @@ import { AutosizeTextarea } from '@/components/AutosizeTextArea'
 import ButtonWithLoading from '@/components/ButtonWithLoading'
 import { useRef } from 'react'
 import { arrayToFileList, cn, sizeInMB } from '@/lib/utils'
-import MediaCarousel from './MediaCarousel'
+import MediaCarousel from '../../image/components/MediaCarousel'
 import CircularButton from '@/components/CircularButton'
 import { ImageIcon } from 'lucide-react'
-import MediaPreview from './MediaPreview'
+import MediaPreview from '../../image/components/MediaPreview'
 import { useToast } from '@/components/ui/use-toast'
 import { useCreatePost } from '../api/createPost'
 import { ToastAction } from '@/components/ui/toast'
@@ -45,7 +45,6 @@ const postSchema = z.object({
                 ACCEPTED_IMAGE_TYPES.includes(file.type)
             )
         }, 'File type is not supported'),
-    // formState.errors?.image?.message
 })
 
 type Props = {
@@ -74,19 +73,13 @@ function PostForm({
     const { toast } = useToast()
     const navigate = useNavigate()
     const { mutate, isPending } = useCreatePost(parentPostId)
-    // const [remainingText, setRemainingText] = useState(MAX_POST_TEXT_LENGTH)
     // Used to trigger file input w/ button
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const text = form.watch('text')
     const images = form.watch('images')
 
-    // useEffect(() => {
-    //     setRemainingText(MAX_POST_TEXT_LENGTH - text.length)
-    // }, [text])
-
     const onSubmit = (values: z.infer<typeof postSchema>) => {
-        console.log(values)
         mutate(
             {
                 text: values.text,
