@@ -1,5 +1,5 @@
 ## Overview
-This is a twitter inspired app which uses Debezium and Kafka for Change Data Capture, pushing changes from primary Postgres database to Elasticsearch to be used for search functionality.
+This is a twitter inspired app which uses Debezium and Kafka for Change Data Capture, pushing changes from primary Postgres database to Elasticsearch for search functionality.
 <br/><br/>Demos can be found in [Demos section](#demos)
 
 ## Tools
@@ -22,9 +22,9 @@ The following tools and technologies are used in this project:
 - TypeScript
 - Playwright
 - React Query
-- React router
+- React Router
 - React Hook Form
-- Framer motion
+- Framer Motion
 - Tailwind CSS
 - Shadcn UI
 
