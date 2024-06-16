@@ -55,12 +55,18 @@ export const AuthProvider = ({ children }: Props) => {
                 })
             } else {
                 setFirebaseUser(null)
-                // storage.clearUser() // Clear user data in localStorage when Firebase user is null
+                setToken('')
             }
         })
         return unsubscribe
     }, [])
-
+    useEffect(() => {
+        if (firebaseUser) {
+            firebaseUser.getIdToken().then((idToken) => {
+                setToken(idToken)
+            })
+        }
+    }, [firebaseUser])
     // Store user data from backend in localStorage
     useEffect(() => {
         if (userQuery.data) {
@@ -84,8 +90,8 @@ export const AuthProvider = ({ children }: Props) => {
                         <Spinner size="lg" />
                     </div>
                 ))}
-            {children}
-            {/* {!loading && children} */}
+            {/* {children} */}
+            {!loading && !userQuery.isLoading && children}
         </AuthContext.Provider>
     )
 }

@@ -24,6 +24,7 @@ function LikeButton({ postId, isLiked, onClick, likeCount }: Props) {
         <button
             className="flex group items-center"
             onClick={(e) => handleLikeButtonClick(e)}
+            aria-label={isLiked ? `Unlike post` : `Like post`}
         >
             <span className="group-hover:text-red-600 rounded-full p-2 group-hover:bg-red-600/10 transition-colors duration-200">
                 {isLiked ? <AiFillHeart color="red" /> : <AiOutlineHeart />}

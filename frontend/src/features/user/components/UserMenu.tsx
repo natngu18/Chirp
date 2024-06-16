@@ -19,9 +19,13 @@ function UserMenu({ isSmallerThanXlScreen }: Props) {
     const navigate = useNavigate()
     if (!appUser) return null
     return (
-        <div className="w-full">
+        <div className="w-full px-2">
             <DropdownMenu modal={false}>
-                <DropdownMenuTrigger className=" hover:bg-slate-50  rounded-full w-full">
+                <DropdownMenuTrigger
+                    className={`${
+                        isSmallerThanXlScreen ? `` : `hover:bg-slate-50`
+                    }  rounded-full w-full`}
+                >
                     <div
                         className={`flex gap-3 items-center ${
                             isSmallerThanXlScreen

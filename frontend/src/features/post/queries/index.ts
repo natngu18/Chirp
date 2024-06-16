@@ -13,7 +13,6 @@ export const postQueryKeys = {
     userReplies: (username: string) =>
         [...postQueryKeys.userLists(username), 'replies'] as const,
     userLikedPosts: (username: string) =>
-        // [...postQueryKeys.lists(), 'liked', username] as const,
         [...postQueryKeys.userLists(username), 'liked'] as const,
 
     details: () => [...postQueryKeys.lists(), 'detail'] as const,

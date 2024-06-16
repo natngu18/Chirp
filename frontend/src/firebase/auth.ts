@@ -10,8 +10,6 @@ import storage from '@/lib/storage'
 export const doSignInWithGoogle = async () => {
     const provider = new GoogleAuthProvider()
     const result = await signInWithPopup(auth, provider)
-    // result.user
-    console.log('result: ', result)
     return result
 }
 

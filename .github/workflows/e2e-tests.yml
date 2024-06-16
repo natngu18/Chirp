@@ -144,9 +144,7 @@ jobs:
     - name: Make frontend envfile
       uses: SpicyPizza/create-envfile@v2.0
       with:
-        envkey_SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
-        envkey_REACT_APP_UID: ${{ secrets.REACT_APP_UID }}
-        envkey_REACT_APP_FIREBASE_CONFIG: ${{ secrets.REACT_APP_FIREBASE_CONFIG }}
+        envkey_VITE_FIREBASE_DEV_AUTH_URL: ${{ secrets.VITE_FIREBASE_DEV_AUTH_URL }}
         envkey_VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         envkey_VITE_NODE_ENV: ${{ secrets.VITE_NODE_ENV }}
         file_name: .env

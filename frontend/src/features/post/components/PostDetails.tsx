@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import { useGetPostAndParentPostsInfinite } from '../api/getPostAndParentPosts'
 import { Spinner } from '@/components/Spinner'
 import { useInView } from 'react-intersection-observer'
@@ -9,24 +8,11 @@ import PostForm from './PostForm'
 import { Separator } from '@/components/ui/separator'
 
 type Props = {
-    // This prop is used to override the postId in the url.
-    // Or to display a specific post in a modal without using url params.
-    propPostId?: string
+    postId: string
     // Specifically set to false in PostDetailsModal (which already displays images in a carousel)
     displayImagesForSpecificPost?: boolean
 }
-function PostDetails({
-    propPostId,
-    displayImagesForSpecificPost = true,
-}: Props) {
-    const { postId: urlPostId } = useParams()
-    // We have a PostDetailsModal where PostDetails is displayed, which can be triggered from a variety of places,
-    // including the /post/:postId route (which is also where PostDetails is displayed).
-    // NOTE: propPostId should have precedence over urlPostId,
-    // because we are capable of triggering PostDetailsModal for a post different
-    // than the one in the url.
-    const postId = propPostId ? propPostId : urlPostId
-
+function PostDetails({ postId, displayImagesForSpecificPost = true }: Props) {
     // Loads relevant post w/ matching postId as placeholder data, if it exists in the cache.
     const query = useGetPostAndParentPostsInfinite({
         postId: postId!,

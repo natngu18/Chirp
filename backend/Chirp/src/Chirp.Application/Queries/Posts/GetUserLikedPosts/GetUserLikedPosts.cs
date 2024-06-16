@@ -45,6 +45,7 @@ namespace Chirp.Application.Queries.Posts.GetUserLikedPosts
                 .Include(p => p.ChildPosts)
                 .Include(p => p.Author)
                     .ThenInclude(u => u.Medias.Where(m => m.IsAvatar))
+                .OrderByDescending(p => p.CreatedAt)
                 .Where(p => p.Likes.Any(l => l.UserId == user.Id))
                 .Select(p => new PostBriefResponse
                 {

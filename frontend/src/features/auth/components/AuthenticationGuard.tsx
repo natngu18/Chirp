@@ -8,10 +8,8 @@ export const AuthenticationGuard = ({
     children: React.ReactNode
 }) => {
     const { firebaseUser, appUser } = useAuth()
-    // const user = storage.getUser()
     // Check if the user is authenticated
-    if (!firebaseUser && !appUser) {
-        // Since toast updates state (Toaster component),
+    if (!firebaseUser) {
         // this avoids updating Toaster component while AuthenticationGuard is rendering.
         setTimeout(() =>
             toast({

@@ -50,6 +50,7 @@ namespace Chirp.Application.Queries.Posts.GetUserReplies
                     //TODO: not necessary?
                     .ThenInclude(pp => pp.Author)
                         .ThenInclude(u => u.Medias.Where(m => m.IsAvatar == true))
+                .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostBriefResponse
                 {
                     Author = _mapper.Map<BaseUserDto>(user),

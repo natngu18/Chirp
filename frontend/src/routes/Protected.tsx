@@ -1,7 +1,6 @@
 import { Spinner } from '@/components/Spinner'
 import { PostDetailsModalProvider } from '@/components/context/PostModalContext'
 import { AuthenticationGuard } from '@/features/auth/components/AuthenticationGuard'
-import PostDetails from '@/features/post/components/PostDetails'
 import { TwitterLayout } from '@/layout/TwitterLayout'
 import { lazyImport } from '@/lib/lazyImport'
 import { Suspense } from 'react'
@@ -12,10 +11,13 @@ const { SearchPage } = lazyImport(
     () => import('@/pages/SearchPage'),
     'SearchPage'
 )
-
 const { UserProfilePage } = lazyImport(
     () => import('@/pages/UserProfilePage'),
     'UserProfilePage'
+)
+const { PostDetailsPage } = lazyImport(
+    () => import('@/pages/PostDetailsPage'),
+    'PostDetailsPage'
 )
 const MainApp = () => {
     return (
@@ -25,7 +27,7 @@ const MainApp = () => {
                 <Suspense
                     fallback={
                         <div className="flex size-full items-center justify-center">
-                            <Spinner size="xl" />
+                            <Spinner size="lg" />
                         </div>
                     }
                 >
@@ -64,7 +66,7 @@ export const routesForAuthenticatedOnly = [
             },
             {
                 path: 'post/:postId',
-                element: <PostDetails />,
+                element: <PostDetailsPage />,
             },
         ],
     },

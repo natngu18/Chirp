@@ -34,7 +34,7 @@ test('should show created post with image in search results where search term is
         .getByPlaceholder('What are you thinking?')
         .pressSequentially(randomText)
 
-    await page.getByRole('button', { name: 'Post' }).click()
+    await page.getByRole('button', { name: 'Post', exact: true }).click()
     await page.getByPlaceholder('Search').click()
     // Use random word from the random text as search term
     const words = randomText.split(' ')
